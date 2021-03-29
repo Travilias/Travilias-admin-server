@@ -4,16 +4,73 @@ interface BuildMakeImageOptions {
     makeId: () => string;
 }
 
+/**
+ * Generate the makeImage function
+ * @param makeId function that returns a unique id
+ */
 export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
+    /**
+     * Return true if the parameter is a valid Id
+     * @param _v
+     */
     const isIdValid = (_v: string) => true;
+
+    /**
+     * Return true if the parameter is a valid Id
+     * @param _v
+     */
     const isUrlValid = (_v: string) => true;
+
+    /**
+     * Return true if the parameter is a valid owner
+     * @param _v
+     */
     const isOwnerValid = (_v: string) => true;
+
+    /**
+     * Return true if the parameter is a valid type
+     * @param _v
+     */
     const isTypeValid = (_v: string) => true;
+
+    /**
+     * Return true if the parameter is a valid ControlDateTime
+     * @param _v
+     */
     const isControlDateTimeValid = (_v: string | number | null) => true;
+
+    /**
+     * Return true if the parameter is a valid array of claims
+     * @param _v
+     */
     const areClaimsValid = (_v: any[]) => true;
+
+    /**
+     * Return true if the parameter is a valid createdAt date
+     * @param _v
+     */
     const isCreatedAtValid = (_v: string | number) => true;
+
+    /**
+     * Return true if the parameter is a valid Pined value
+     * @param _v
+     */
     const isPinedValid = (_v: boolean) => true;
 
+    /**
+     * Create an image
+     *
+     * <b>Mandatory :</b>
+     * - url : url of the image
+     * - owner : id of the image owner
+     * - type : type of the image {@link ImageType}
+     *
+     * <b>Optional:</b>
+     * - id : Image id (generate it if not provided)
+     * - image : controlDatetime (default = null)
+     * - claims : list of claims (default = [])
+     * - pined : true if the image is pined (default = false)
+     */
     return function makeImage({
                                   id = makeId(),
                                   url,
@@ -22,7 +79,7 @@ export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
                                   controlDatetime = null,
                                   claims = [],
                                   created_at = Date.now(),
-                                  pined
+                                  pined = false
                               }: ImageSchema): Image {
 
         // Check options validity
