@@ -10,7 +10,11 @@
       "noImplicitAny": false,
       "moduleResolution": "node",
       "sourceMap": true,
-      "outDir": "dist"
+      "outDir": "dist",
+      "baseUrl": ".",
+      "paths": {
+        "@tas/*": ["src/*"]
+      }
     },
     "include": [
       "src/**/*",
