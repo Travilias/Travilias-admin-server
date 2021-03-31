@@ -1,5 +1,5 @@
-// TODO : Remplacer par @tas des que les branches sont mergées
-import { SuggestionSchema, BuildMakeSuggestionOptions } from "../types";
+import ResponseError from "@tas/tools/types/ResponseError";
+import { SuggestionSchema, BuildMakeSuggestionOptions } from "@tas/suggestion/types";
 
 export default function buildMakeSuggestion({makeId}: BuildMakeSuggestionOptions){
 
@@ -16,7 +16,21 @@ export default function buildMakeSuggestion({makeId}: BuildMakeSuggestionOptions
         date
     }:SuggestionSchema) {
 
-        
+        if(!isValidId(id)){
+            throw new ResponseError("[Création de la suggestion] id non valide", 400);
+        }
+
+        if(!isValidMessage(message)){
+            throw new ResponseError("[Création de la suggestion] message non valide", 400);
+        }
+
+        if(!isValidUser(user)){
+            throw new ResponseError("[Création de la suggestion] user non valide", 400);
+        }
+
+        if(!isValidDate(date)){
+            throw new ResponseError("[Création de la suggestion] date non valide", 400);
+        }
 
         return Object.freeze({
             getId: () => id,
