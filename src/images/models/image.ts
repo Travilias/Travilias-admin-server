@@ -13,31 +13,39 @@ export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
      * Return true if the parameter is a valid Id
      * @param _v
      */
-    const isIdValid = (_v: string) => true;
+    const isIdValid = (_v: string) => typeof _v == "string";
 
     /**
      * Return true if the parameter is a valid Id
      * @param _v
      */
-    const isUrlValid = (_v: string) => true;
+    const isUrlValid = (_v: string) => {
+        const urlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
+        return _v !== null && urlRegex.test(_v);
+    };
 
     /**
      * Return true if the parameter is a valid owner
      * @param _v
      */
-    const isOwnerValid = (_v: string) => true;
+    const isOwnerValid = (_v: string) => _v !== null && typeof _v == "string";
 
     /**
      * Return true if the parameter is a valid type
      * @param _v
      */
-    const isTypeValid = (_v: string) => true;
+    const isTypeValid = (_v: string) =>
+        ["PROFILE_PICTURE", "ATTACHMENT", "POST_PICTURE", "BOOK_COVER"].indexOf(_v) !== -1;
+
 
     /**
      * Return true if the parameter is a valid ControlDateTime
      * @param _v
      */
-    const isControlDateTimeValid = (_v: string | number | null|Date) => true;
+    const isControlDateTimeValid = (_v: string | number | null | Date) => {
+        const date = new Date(_v);
+        return !isNaN(date.getTime());
+    };
 
     /**
      * Return true if the parameter is a valid array of claims
@@ -49,13 +57,16 @@ export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
      * Return true if the parameter is a valid createdAt date
      * @param _v
      */
-    const isCreatedAtValid = (_v: string | number|Date) => true;
+    const isCreatedAtValid = (_v: string | number | Date) => {
+        const date = new Date(_v);
+        return !isNaN(date.getTime());
+    };
 
     /**
      * Return true if the parameter is a valid Pined value
      * @param _v
      */
-    const isPinedValid = (_v: boolean) => true;
+    const isPinedValid = (_v: boolean) => typeof _v == "boolean";
 
     /**
      * Create an image
