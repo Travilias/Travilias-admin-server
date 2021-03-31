@@ -37,7 +37,7 @@ export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
      * Return true if the parameter is a valid ControlDateTime
      * @param _v
      */
-    const isControlDateTimeValid = (_v: string | number | null) => true;
+    const isControlDateTimeValid = (_v: string | number | null|Date) => true;
 
     /**
      * Return true if the parameter is a valid array of claims
@@ -49,7 +49,7 @@ export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
      * Return true if the parameter is a valid createdAt date
      * @param _v
      */
-    const isCreatedAtValid = (_v: string | number) => true;
+    const isCreatedAtValid = (_v: string | number|Date) => true;
 
     /**
      * Return true if the parameter is a valid Pined value

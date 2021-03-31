@@ -24,8 +24,22 @@ export interface ImageSchema {
     url: string;
     owner: string; // TODO : type Id
     type: ImageType;
-    controlDatetime: string|number|null;
+    controlDatetime: string|number|null|Date;
     claims: any[]; // TODO : type claims
-    created_at: string|number;
+    created_at: string|number|Date;
     pined: boolean;
 }
+
+interface FindAllOptions {
+    start: Date,
+    limit: number,
+    page: number,
+    unControlled: boolean
+}
+
+export interface i_ImageDb {
+    insert: (is:ImageSchema) => ImageSchema;
+    findAll: (options: FindAllOptions) => ImageSchema[];
+}
+
+export type ImageDb = Readonly<i_ImageDb>;
