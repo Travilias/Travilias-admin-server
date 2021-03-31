@@ -3,3 +3,10 @@ node_modules
 # IDE folders
 .vscode
 .idea
+
+# compiled files
+dist
+
+# environment files
+.env
+
