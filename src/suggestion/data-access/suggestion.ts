@@ -35,7 +35,7 @@ export default function buildSuggestionDb({makeDb, collection}:buildSuggestionDb
 
     }
 
-    async function findAll() {
+    async function findAll():Promise<SuggestionSchema[]> {
 
         const db = await makeDb();
 
@@ -43,10 +43,17 @@ export default function buildSuggestionDb({makeDb, collection}:buildSuggestionDb
                 .find();
 
         if(!suggestions) {
-            return {data: "aucune suggestion trouvée"};
+            return [
+                {
+                    id: "-1",
+                    message: "no suggestion found with this id",
+                    user: null,
+                    date: null
+                }
+            ];
         }
 
-        return suggestions;
+        return suggestions.toArray();
 
     }
 
