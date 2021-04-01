@@ -3,7 +3,8 @@ import { Suggestion, SuggestionSchema } from "../types"
 interface buildGetSuggestionOptions {
     suggestionDb: Readonly<{
         findById: (id:string) => Promise<SuggestionSchema>,
-        findAll: () => Promise<SuggestionSchema[]>
+        findAll: () => Promise<SuggestionSchema[]>,
+        insert: ({}:SuggestionSchema) => Promise<SuggestionSchema>
     }>,
     makeSuggestion: ({}:SuggestionSchema) => Suggestion
 }

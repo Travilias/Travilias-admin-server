@@ -1,3 +1,4 @@
+import makeId from "@tas/makeId";
 import ResponseError from "@tas/tools/types/ResponseError";
 import {Db, FilterQuery, ObjectId} from "mongodb";
 import { BuildMakeSuggestionOptions, SuggestionSchema } from "../types";
@@ -57,9 +58,37 @@ export default function buildSuggestionDb({makeDb, collection}:buildSuggestionDb
 
     }
 
+    async function insert({
+        id: _id = makeId(),
+        ...SuggestionInfos
+    }:SuggestionSchema):Promise<SuggestionSchema> {
+
+        const db = await makeDb();
+        const res = await db.collection(collection).insertOne({_id, ...SuggestionInfos});
+
+        if(!res) {
+            return {
+                id: "-1",
+                message: "no suggestion found with this id", 
+                user: null,
+                date: null
+            };
+        }
+
+        const suggestion = res.ops[0];
+        return {
+            id: suggestion._id,
+            message: suggestion.message,
+            user: suggestion.user,
+            date: suggestion.date
+        };
+        
+    }
+
     return Object.freeze({
         findById,
-        findAll
+        findAll,
+        insert
     })
 
 }
