@@ -1,9 +1,15 @@
 
+interface Suggestion {
+    getId: () => string,
+    getMessage: () => string,
+    getUser: () => number, // TODO : modifier des que l'on a un type user
+    getDate: () => string
+}
 
 interface SuggestionSchema {
     id: string;
     message: string;
-    user: string; // TODO : modifier des que l'on a un type user
+    user: number; // TODO : modifier des que l'on a un type user
     date: string;
 }
 
@@ -13,5 +19,6 @@ interface BuildMakeSuggestionOptions {
 
 export {
     SuggestionSchema,
-    BuildMakeSuggestionOptions
+    BuildMakeSuggestionOptions,
+    Suggestion
 }

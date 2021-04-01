@@ -1,5 +1,5 @@
 import ResponseError from "@tas/tools/types/ResponseError";
-import { SuggestionSchema, BuildMakeSuggestionOptions } from "@tas/suggestion/types";
+import { SuggestionSchema, BuildMakeSuggestionOptions, Suggestion } from "@tas/suggestion/types";
 
 export default function buildMakeSuggestion({makeId}: BuildMakeSuggestionOptions){
 
@@ -9,12 +9,12 @@ export default function buildMakeSuggestion({makeId}: BuildMakeSuggestionOptions
     const isValidUser = (user) => true;
     const isValidDate = (date) => true;
 
-    return async function makeSuggestion({
+    return function makeSuggestion({
         id = makeId(),
         message,
         user,
         date
-    }:SuggestionSchema) {
+    }:SuggestionSchema):Suggestion {
 
         if(!isValidId(id)){
             throw new ResponseError("[Création de la suggestion] id non valide", 400);
