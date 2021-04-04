@@ -1,10 +1,9 @@
 import {Db, FilterQuery} from "mongodb";
-import {ImageDb, ImageSchema} from "../types";
+import {ImageSchema} from "../types";
 
-interface MakeImageDbOptions {
+interface ImageRepositoryOptions {
     makeDb: () => Promise<Db>,
-    collectionName: string,
-    makeId: () => string
+    collectionName: string
 }
 
 interface FindAllOptions {
@@ -14,18 +13,15 @@ interface FindAllOptions {
     unControlled: boolean
 }
 
-/**
- * Setup the functions that interact with a mongoDb database for Images
- * @param makeDb an async function that creates a connection to a mongoDB database
- * @param collectionName Name of the mongodb collection that contains images
- * @param makeId function that generates Ids
- */
-export default function makeImageDb({makeDb, collectionName, makeId}: MakeImageDbOptions) {
+export default class ImageRepository {
+    protected makeDb: () => Promise<Db>;
+    protected collectionName: string;
 
-    return Object.freeze({
-        findAll,
-        insert
-    })
+
+    constructor(options: ImageRepositoryOptions) {
+        this.makeDb = options.makeDb;
+        this.collectionName = options.collectionName;
+    }
 
     /**
      * Find images in the Database
@@ -34,8 +30,8 @@ export default function makeImageDb({makeDb, collectionName, makeId}: MakeImageD
      * @param page Number of <limit> to skip before retuning the results
      * @param unControlled boolean
      */
-    async function findAll({start = new Date(), limit = 10, page = 0, unControlled = true}: FindAllOptions) {
-        const db = await makeDb();
+    async findAll({start = new Date(), limit = 10, page = 0, unControlled = true}: FindAllOptions) {
+        const db = await this.makeDb();
         // TODO : type db schema
         const query: FilterQuery<any> = {
             $and: [
@@ -46,7 +42,7 @@ export default function makeImageDb({makeDb, collectionName, makeId}: MakeImageD
         if (unControlled) {
             query.$and.push({controlDatetime: null});
         }
-        const pages = await db.collection(collectionName).find(query).limit(10).skip(page * limit);
+        const pages = await db.collection(this.collectionName).find(query).limit(limit).skip(page * limit);
 
         // Map the query result
         return (await pages.toArray()).map(({_id: id, ...image}) => ({
@@ -55,14 +51,11 @@ export default function makeImageDb({makeDb, collectionName, makeId}: MakeImageD
         }));
     }
 
-    async function insert({id: _id = makeId(), ...imageInfos}: ImageSchema): Promise<ImageSchema> {
-        const db = await makeDb();
-        const result = await db.collection(collectionName).insertOne({_id, ...imageInfos});
+    async insert({id: _id, ...imageInfos}: ImageSchema): Promise<ImageSchema> {
+        const db = await this.makeDb();
+        const result = await db.collection(this.collectionName).insertOne({_id, ...imageInfos});
         const {_id: id, ...insertedInfos} = result.ops[0];
         return {id, ...insertedInfos};
     }
-
-    
-
 
 }
