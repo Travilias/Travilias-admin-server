@@ -33,16 +33,16 @@ export default class ImageRepository {
     async findAll({start = new Date(), limit = 10, page = 0, unControlled = true}: FindAllOptions) {
         const db = await this.makeDb();
         // TODO : type db schema
-        const query: FilterQuery<any> = {
+        const query: FilterQuery<ImageSchema> = {
             $and: [
-                {created_at: {$lt: start}}
+                {createdAt: {$lt: start}}
             ]
         };
 
         if (unControlled) {
             query.$and.push({controlDatetime: null});
         }
-        const pages = await db.collection(this.collectionName).find(query).limit(limit).skip(page * limit);
+        const pages = db.collection(this.collectionName).find(query).limit(limit).skip(page * limit);
 
         // Map the query result
         return (await pages.toArray()).map(({_id: id, ...image}) => ({
