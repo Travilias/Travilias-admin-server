@@ -1,4 +1,4 @@
-import { UserSchema} from "@tas/users/types"
+import {UserSchema} from "@tas/users/types"
 import UserClass from "@tas/users/models/UserClass";
 
 interface BuildMakeUserOptions {
@@ -22,9 +22,10 @@ export default function buildMakeUser({makeId}: BuildMakeUserOptions) {
 
         constructor({
                         id = makeId(),
+                        created_at = new Date(),
                         ..._options
                     }: UserSchema) {
-            super({id, ..._options});
+            super({id, created_at, ..._options});
 
             if (!isIdValid(this._id)) {
                 throw new Error("Invalid id")
