@@ -10,7 +10,7 @@ export interface UserSchema {
 }
 
 export interface UserInfos {
-    id: string;
+    id?: string;
     username: string;
     email: string;
     displayedName: string;
