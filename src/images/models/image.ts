@@ -49,6 +49,7 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
      * @param _v
      */
     const isControlDateTimeValid = (_v: string | number | null | Date) => {
+        if (!_v) return true;
         const date = new Date(_v);
         return !isNaN(date.getTime());
     };
@@ -107,7 +108,7 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
                 throw  new Error("Invalid value for Url")
             }
             if (!isOwnerIdValid(this._ownerId)) {
-                throw  new Error("Invalid value for Owner")
+                throw  new Error("Invalid value for OwnerId")
             }
             if (!isTypeValid(this._type)) {
                 throw  new Error("Invalid value for Type")
@@ -132,6 +133,8 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
             }
             return this._owner;
         }
+
+
     }
 
 }
