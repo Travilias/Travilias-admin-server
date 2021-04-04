@@ -1,14 +1,20 @@
-import {Image, ImageSchema} from "@tas/images/types"
+import {ImageSchema} from "@tas/images/types"
+import ImageClass from "@tas/images/models/ImageClass";
+import {UserSchema} from "@tas/users/types";
 
 interface BuildMakeImageOptions {
     makeId: () => string;
+    findUser: (options: { id: string }) => Promise<UserSchema>;
 }
 
 /**
  * Generate the makeImage function
- * @param makeId function that returns a unique id
+ * @param {Object} options
+ * @param {function} options.makeId function that returns a unique id
+ * @param {function} options.findUser function that returns a promise that resolve in a user
  */
-export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
+export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions) {
+
     /**
      * Return true if the parameter is a valid Id
      * @param _v
@@ -28,7 +34,7 @@ export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
      * Return true if the parameter is a valid owner
      * @param _v
      */
-    const isOwnerValid = (_v: string) => _v !== null && typeof _v == "string";
+    const isOwnerIdValid = (_v: string) => _v !== null && typeof _v == "string";
 
     /**
      * Return true if the parameter is a valid type
@@ -57,9 +63,8 @@ export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
      * Return true if the parameter is a valid createdAt date
      * @param _v
      */
-    const isCreatedAtValid = (_v: string | number | Date) => {
-        const date = new Date(_v);
-        return !isNaN(date.getTime());
+    const isCreatedAtValid = (_v: Date) => {
+        return !isNaN(_v.getTime());
     };
 
     /**
@@ -82,60 +87,51 @@ export default function buildMakeImage({makeId}: BuildMakeImageOptions) {
      * - claims : list of claims (default = [])
      * - pined : true if the image is pined (default = false)
      */
-    return function makeImage({
-                                  id = makeId(),
-                                  url,
-                                  owner,
-                                  type,
-                                  controlDatetime = null,
-                                  claims = [],
-                                  created_at = Date.now(),
-                                  pined = false
-                              }: ImageSchema): Image {
+    return class Image extends ImageClass {
 
-        // Check options validity
-        if (!isIdValid(id)) {
-            throw new Error("Invalid Id");
-        }
-        if (!isUrlValid(url)) {
-            throw new Error("Invalid Url");
-        }
-        if (!isOwnerValid(owner)) {
-            throw new Error("Invalid Owner");
-        }
-        if (!isTypeValid(type)) {
-            throw new Error("Invalid Type");
-        }
-        if (!isControlDateTimeValid(controlDatetime)) {
-            throw new Error("Invalid Control Date Time");
-        }
-        if (!areClaimsValid(claims)) {
-            throw new Error("Invalid Claims");
-        }
-        if (!isCreatedAtValid(created_at)) {
-            throw new Error("Invalid Created At date");
-        }
-        if (!isPinedValid(pined)) {
-            throw new Error("Invalid Pined value");
-        }
+        protected _owner: UserSchema;
 
-        return Object.freeze({
-            getId: () => id,
-            getUrl: () => url,
-            getOwner: () => owner, // TODO : type owner
-            getType: () => type,
-            getControlDatetime: () => controlDatetime ? new Date(controlDatetime) : null,
-            getClaims: () => claims,
-            getCreatedAt: () => new Date(created_at),
-            getPined: () => pined,
-            pin: () => {
-                pined = true;
-            },
-            unPin: () => {
-                pined = false
+        constructor({
+                        id = makeId(),
+                        createdAt = new Date(),
+                        claims = [],
+                        pined = false,
+                        ..._options
+                    }: ImageSchema) {
+            super({id, createdAt, claims, pined, ..._options});
+
+            if (!isIdValid(this._id)) {
+                throw  new Error("Invalid value for Id")
             }
-        });
+            if (!isUrlValid(this._url)) {
+                throw  new Error("Invalid value for Url")
+            }
+            if (!isOwnerIdValid(this._ownerId)) {
+                throw  new Error("Invalid value for Owner")
+            }
+            if (!isTypeValid(this._type)) {
+                throw  new Error("Invalid value for Type")
+            }
+            if (!isControlDateTimeValid(this._controlDatetime)) {
+                throw  new Error("Invalid value for controlDateTime")
+            }
+            if (!areClaimsValid(this._claims)) {
+                throw  new Error("Invalid value for claims")
+            }
+            if (!isCreatedAtValid(this._createdAt)) {
+                throw  new Error("Invalid value for createdAt")
+            }
+            if (!isPinedValid(this.pined)) {
+                throw  new Error("Invalid value for pined")
+            }
+        }
 
-
+        async getOwner(): Promise<UserSchema> {
+            if (!this._owner) {
+                this._owner = await findUser({id: this._ownerId});
+            }
+            return this._owner;
+        }
     }
+
 }

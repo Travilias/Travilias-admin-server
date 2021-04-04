@@ -22,11 +22,11 @@ export interface Image {
 export interface ImageSchema {
     id: string;
     url: string;
-    owner: string; // TODO : type Id
+    ownerId: string; // TODO : type Id
     type: ImageType;
     controlDatetime: string|number|null|Date;
     claims: any[]; // TODO : type claims
-    created_at: string|number|Date;
+    createdAt: string|number|Date;
     pined: boolean;
 }
 
