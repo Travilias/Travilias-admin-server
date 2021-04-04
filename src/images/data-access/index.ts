@@ -1,9 +1,10 @@
-import makeImageDb from "@tas/images/data-access/image-db";
 import {makeDb} from "@tas/database";
-import makeId from "@tas/makeId";
+import ImageRepository from "@tas/images/data-access/image-db";
 
-const imageDb = makeImageDb({makeDb, collectionName: 'images', makeId});
+const collectionName = 'images'
+
+const imageRepository = new ImageRepository({makeDb, collectionName});
 
 export {
-    imageDb
+    imageRepository
 }
