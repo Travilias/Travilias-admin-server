@@ -42,7 +42,7 @@ export default class ImageRepository {
         if (unControlled) {
             query.$and.push({controlDatetime: null});
         }
-        const pages = await db.collection(this.collectionName).find(query).limit(10).skip(page * limit);
+        const pages = await db.collection(this.collectionName).find(query).limit(limit).skip(page * limit);
 
         // Map the query result
         return (await pages.toArray()).map(({_id: id, ...image}) => ({
