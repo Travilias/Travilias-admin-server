@@ -12,6 +12,7 @@ interface buildListSuggestionOptions {
 
 export default function buildListSuggestion({suggestionDb, makeSuggestion}:buildListSuggestionOptions){
 
+    // TODO : pagination
     return async function listSuggestion({}){
 
         const data = await suggestionDb.findAll();

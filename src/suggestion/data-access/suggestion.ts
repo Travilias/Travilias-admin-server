@@ -18,6 +18,7 @@ export default function buildSuggestionDb({makeDb, collection}:buildSuggestionDb
                 .findOne( {"_id.$oid": new ObjectId(id)} );
 
         if(!res) {
+            // TODO : throw exeption
             return {
                 id: "-1",
                 message: "no suggestion found with this id",
@@ -36,6 +37,7 @@ export default function buildSuggestionDb({makeDb, collection}:buildSuggestionDb
 
     }
 
+        // TODO : pagination
     async function findAll():Promise<SuggestionSchema[]> {
 
         const db = await makeDb();
@@ -44,6 +46,7 @@ export default function buildSuggestionDb({makeDb, collection}:buildSuggestionDb
                 .find();
 
         if(!suggestions) {
+            // TODO : throw exeption
             return [
                 {
                     id: "-1",
@@ -67,6 +70,7 @@ export default function buildSuggestionDb({makeDb, collection}:buildSuggestionDb
         const res = await db.collection(collection).insertOne({_id, ...SuggestionInfos});
 
         if(!res) {
+            // TODO : throw exeption
             return {
                 id: "-1",
                 message: "no suggestion found with this id", 
