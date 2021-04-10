@@ -2,21 +2,23 @@ import {GPSLocation, PostSchema} from "@tas/posts/types";
 import {UserSchema} from "@tas/users/types";
 import {ImageSchema} from "@tas/images/types";
 
-export default abstract class PostClass {
+export default abstract class PostClass implements PostSchema {
     protected _id: string;
     protected _title: string;
     protected _content: string;
     protected _imagesIds: string[];
     protected _authorId: string;
     protected _location: GPSLocation;
+    protected _createdAt: Date;
 
-    protected constructor({id, title, content, imagesIds, authorId, location}: PostSchema) {
+    protected constructor({id, title, content, imagesIds, authorId, location, createdAt}: PostSchema) {
         this._id = id;
         this._title = title;
         this._content = content;
         this._imagesIds = imagesIds;
         this._authorId = authorId;
         this._location = location;
+        this._createdAt = createdAt;
     }
 
     abstract getAuthor(): Promise<UserSchema>;
@@ -46,5 +48,9 @@ export default abstract class PostClass {
 
     get location(): GPSLocation {
         return this._location;
+    }
+
+    get createdAt(): Date {
+        return this._createdAt;
     }
 }

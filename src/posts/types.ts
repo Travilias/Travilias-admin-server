@@ -5,10 +5,30 @@ export interface GPSLocation {
 }
 
 export interface PostSchema {
-    id: string;
+    id?: string;
     title: string;
     content: string;
     imagesIds: string[];
     authorId: string;
     location: GPSLocation;
+    createdAt?: Date;
+}
+
+export interface PostDocument {
+    _id: string;
+    title: string;
+    content: string;
+    imagesIds: string[];
+    authorId: string;
+    location: GPSLocation;
+    createdAt: Date;
+}
+
+export enum ControlType {
+    VALID = "VALID",
+    ILLEGAL_CONTENT = "ILLEGAL_CONTENT",
+    RESTRICTED = "RESTRICTED",
+    VIOLENCE = "VIOLENCE",
+    DISCRIMINATION ="DISCRIMINATION",
+    COPYRIGHT = "COPYRIGHT"
 }
