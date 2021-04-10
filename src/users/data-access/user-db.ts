@@ -37,12 +37,13 @@ export default class UserRepository {
 
     /**
      * Get a user by its Id
-     * @param id of the user to find
+     * @param _id of the user to find
      * @returns {UserSchema} The founded user
      */
-    public async findById(id: string): Promise<UserSchema> {
+    public async findById(_id: string): Promise<UserSchema> {
         const db = await this.makeDb();
-        return await db.collection(this.collection).findOne({_id: id});
+        const {_id: id, ...userInfos} = await db.collection(this.collection).findOne({_id});
+        return {id, ...userInfos};
     }
 
     /**

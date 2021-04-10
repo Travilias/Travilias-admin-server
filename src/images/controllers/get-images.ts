@@ -1,3 +1,5 @@
+import {Image} from '../models';
+
 export default function makeGetImages({listImages}) {
     return async function getImages(httpRequest) {
         const {limit, page, start, unControlled} = httpRequest.query;
@@ -20,6 +22,7 @@ export default function makeGetImages({listImages}) {
             options.page = _page;
         }
 
+
         if (start) {
             const _start = new Date(start);
             if (isNaN(_start.getTime())) {
@@ -29,6 +32,10 @@ export default function makeGetImages({listImages}) {
         }
         options.unControlled = !!unControlled;
 
-        return await listImages(options);
+        const images = await listImages(options);
+
+        return images.map((image) => new Image(image));
+
+
     }
 }

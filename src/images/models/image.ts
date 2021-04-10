@@ -49,6 +49,7 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
      * @param _v
      */
     const isControlDateTimeValid = (_v: string | number | null | Date) => {
+        if (_v == null) return true;
         const date = new Date(_v);
         return !isNaN(date.getTime());
     };
@@ -94,11 +95,12 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
         constructor({
                         id = makeId(),
                         createdAt = new Date(),
+            controlDatetime = null,
                         claims = [],
                         pined = false,
                         ..._options
                     }: ImageSchema) {
-            super({id, createdAt, claims, pined, ..._options});
+            super({id, createdAt, controlDatetime, claims, pined, ..._options});
 
             if (!isIdValid(this._id)) {
                 throw  new Error("Invalid value for Id")

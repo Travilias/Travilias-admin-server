@@ -35,13 +35,14 @@ export default class ImageRepository {
         // TODO : type db schema
         const query: FilterQuery<any> = {
             $and: [
-                {created_at: {$lt: start}}
+                {createdAt: {$lt: start}}
             ]
         };
 
         if (unControlled) {
             query.$and.push({controlDatetime: null});
         }
+        console.log(JSON.stringify(query));
         const pages = await db.collection(this.collectionName).find(query).limit(limit).skip(page * limit);
 
         // Map the query result
