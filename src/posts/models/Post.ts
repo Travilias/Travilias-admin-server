@@ -1,12 +1,12 @@
 import PostClass from "@tas/posts/models/PostClass";
 import {GPSLocation, PostSchema} from "@tas/posts/types";
-import {ImageSchema} from "@tas/images/types";
-import {UserSchema} from "@tas/users/types";
+import ImageClass from "@tas/images/models/ImageClass";
+import UserClass from "@tas/users/models/UserClass";
 
 interface BuildPostOptions {
     makeId: () => string;
-    findImageById: (id: string) => Promise<ImageSchema>;
-    findUserById: (id: string) => Promise<UserSchema>;
+    findImageById: (id: string) => Promise<ImageClass>;
+    findUserById: (id: string) => Promise<UserClass>;
 }
 
 export default function buildPost({makeId, findImageById, findUserById}: BuildPostOptions) {
@@ -20,9 +20,6 @@ export default function buildPost({makeId, findImageById, findUserById}: BuildPo
     const isCreatedAtValid = (_v: Date) => true
 
     return class Post extends PostClass {
-
-        protected _author: UserSchema;
-        protected _images: ImageSchema[];
 
         constructor({
                         id = makeId(),
@@ -55,14 +52,14 @@ export default function buildPost({makeId, findImageById, findUserById}: BuildPo
             }
         }
 
-        async getAuthor(): Promise<UserSchema> {
+        async getAuthor(): Promise<UserClass> {
             if (!this._author) {
                 this._author = await findUserById(this._authorId);
             }
             return this._author;
         }
 
-        getImages(): Promise<ImageSchema[]> {
+        async getImages(): Promise<ImageClass[]> {
             return Promise.all(this._imagesIds.map(async image => await findImageById(image)));
         }
 

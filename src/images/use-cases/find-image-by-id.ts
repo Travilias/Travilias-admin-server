@@ -1,4 +1,5 @@
 import ImageRepository from "@tas/images/data-access/image-db";
+import {Image} from "@tas/images/models";
 
 interface MakeFindImageOptions {
     imageRepository: ImageRepository;
@@ -6,6 +7,6 @@ interface MakeFindImageOptions {
 
 export default  function makeFindImageById({imageRepository}: MakeFindImageOptions) {
     return async function findImageById(id: string) {
-        return await imageRepository.findById(id);
+        return new Image(await imageRepository.findById(id));
     }
 }

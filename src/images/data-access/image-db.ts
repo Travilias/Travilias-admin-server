@@ -42,7 +42,6 @@ export default class ImageRepository {
         if (unControlled) {
             query.$and.push({controlDatetime: null});
         }
-        console.log(JSON.stringify(query));
         const pages = await db.collection(this.collectionName).find(query).limit(limit).skip(page * limit);
 
         // Map the query result

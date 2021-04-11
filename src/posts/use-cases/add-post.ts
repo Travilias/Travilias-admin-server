@@ -11,7 +11,7 @@ export default function makeAddPost({postRepository}: MakeAddPostOptions) {
     return async function addPost(postInfos: PostSchema) {
         const post = new Post(postInfos);
 
-        return await postRepository.insert({
+        return new Post(await postRepository.insert({
             id: post.id,
             title: post.title,
             content: post.content,
@@ -19,6 +19,8 @@ export default function makeAddPost({postRepository}: MakeAddPostOptions) {
             imagesIds: post.imagesIds,
             location: post.location,
             createdAt: post.createdAt,
-        });
+            controlType: null,
+            controlledAt: null
+        }));
     }
 }

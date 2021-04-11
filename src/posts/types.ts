@@ -5,13 +5,15 @@ export interface GPSLocation {
 }
 
 export interface PostSchema {
-    id?: string;
+    id: string;
     title: string;
     content: string;
     imagesIds: string[];
     authorId: string;
     location: GPSLocation;
-    createdAt?: Date;
+    createdAt: Date;
+    controlType: ControlType|null;
+    controlledAt: Date|null;
 }
 
 export interface PostDocument {
@@ -22,6 +24,8 @@ export interface PostDocument {
     authorId: string;
     location: GPSLocation;
     createdAt: Date;
+    controlType: ControlType|null;
+    controlledAt: Date|null;
 }
 
 export enum ControlType {

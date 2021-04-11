@@ -1,41 +1,29 @@
-import {PostSchema} from "@tas/posts/types";
-import {UserSchema} from "@tas/users/types";
-import {ImageSchema} from "@tas/images/types";
+import PostClass from "@tas/posts/models/PostClass";
 
 interface MakeGetPostByIdOptions {
-    findPostById: (id: string) => Promise<PostSchema>,
-    findUserById: (id: string) => Promise<UserSchema>,
-    findImageById: (id: string) => Promise<ImageSchema>,
+    findPostById: (id: string) => Promise<PostClass>,
 }
 
-export default function makeGetPostById({findPostById, findUserById, findImageById}: MakeGetPostByIdOptions) {
+export default function makeGetPostById({findPostById}: MakeGetPostByIdOptions) {
     return async function getPostById(httpRequest) {
         const {id} = httpRequest.params;
 
-        const postInfos = await findPostById(id);
+        // find the post
+        const post = await findPostById(id);
 
-        if (!postInfos) {
+        // If the post has not been found throw an error
+        if (!post) {
             throw Error("Post not found");
         }
 
-        // Populate and return the post
+        // Populate the post
+        await Promise.all([
+            post.getAuthor(),
+            post.getImages()
+        ]);
 
-        // Populate Author
-        const author = await findUserById(postInfos.authorId);
-
-        // Populate images
-        const images = await Promise.all(postInfos.imagesIds.map(imageId => findImageById(imageId)));
-
-        const post = {
-            id: postInfos.id,
-            title: postInfos.title,
-            content: postInfos.content,
-            location: postInfos.location,
-            author,
-            images
-        };
-
-        return {post};
+        // return the post
+        return {post: post.toSchema()};
 
     }
 }

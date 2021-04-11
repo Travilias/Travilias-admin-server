@@ -40,4 +40,10 @@ export default class PostRepository extends MongoRepository {
         }));
 
     }
+
+    async updatePost({id: _id, ...postInfos}: PostSchema) {
+        const db = await this.makeDb();
+        const res = await db.collection<PostDocument>(this.collection).updateOne({_id}, {$set: {...postInfos}});
+        return res.modifiedCount > 0 ? {id: _id, ...postInfos} : null;
+    }
 }

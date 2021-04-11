@@ -1,4 +1,5 @@
 import PostRepository from "@tas/posts/data-access/postDb";
+import {Post} from "@tas/posts/models";
 
 interface MakeFindPostByIdOptions {
     postRepository: PostRepository;
@@ -6,6 +7,6 @@ interface MakeFindPostByIdOptions {
 
 export default function makeFindPostById({postRepository}: MakeFindPostByIdOptions) {
     return async function findPostById(id: string) {
-        return postRepository.findById(id);
+        return new Post(await postRepository.findById(id));
     }
 }

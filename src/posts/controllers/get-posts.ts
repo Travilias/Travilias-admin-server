@@ -1,19 +1,16 @@
-import {PostSchema} from "@tas/posts/types";
-import {UserSchema} from "@tas/users/types";
-import {ImageSchema} from "@tas/images/types";
+import PostClass from "@tas/posts/models/PostClass";
 
 interface MakeGetPostsOptions {
-    listPosts: (options: {limit: number, page: number, start: Date}) => Promise<PostSchema[]>,
-    findUserById: (id: string) => Promise<UserSchema>,
-    findImageById: (id: string) => Promise<ImageSchema>,
+    listPosts: (options: {limit: number, page: number, start: Date}) => Promise<PostClass[]>,
 }
 
-export default function makeGetPosts({listPosts, findUserById, findImageById}: MakeGetPostsOptions) {
+export default function makeGetPosts({listPosts}: MakeGetPostsOptions) {
     return async function getPosts(httpRequest) {
         const {limit, page, start} = httpRequest.query;
 
         const options: any = {};
 
+        // Verify and add options
         if (limit) {
             const _limit = parseInt(limit);
             if (isNaN(_limit)) {
@@ -42,20 +39,8 @@ export default function makeGetPosts({listPosts, findUserById, findImageById}: M
 
         // Populate and return posts
         return await Promise.all(posts.map(async post => {
-            // Populate Author
-            const author = await findUserById(post.authorId);
-
-            // Populate images
-            const images = await Promise.all(post.imagesIds.map(imageId => findImageById(imageId)));
-
-            return {
-                id: post.id,
-                title: post.title,
-                content: post.content,
-                location: post.location,
-                author,
-                images
-            }
+            await Promise.all([post.getAuthor(), post.getImages()]);
+            return post.toSchema();
         }))
 
     }

@@ -1,6 +1,10 @@
-import {Image} from '../models';
+import ImageClass from "@tas/images/models/ImageClass";
 
-export default function makeGetImages({listImages}) {
+interface MakeGetImagesOptions {
+    listImages: (options: {limit: number, page: number, start: Date}) => Promise<ImageClass[]>
+}
+
+export default function makeGetImages({listImages}: MakeGetImagesOptions) {
     return async function getImages(httpRequest) {
         const {limit, page, start, unControlled} = httpRequest.query;
 
@@ -32,9 +36,10 @@ export default function makeGetImages({listImages}) {
         }
         options.unControlled = !!unControlled;
 
-        const images = await listImages(options);
-
-        return images.map((image) => new Image(image));
+        return await Promise.all((await listImages(options)).map((async image => {
+            await image.getOwner();
+            return image.toSchema();
+        })));
 
 
     }
