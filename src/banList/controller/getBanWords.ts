@@ -1,12 +1,12 @@
-import ImageClass from "@tas/images/models/ImageClass";
+import { BanWordClass } from "../models";
 
-interface MakeGetImagesOptions {
-    listImages: (options: { limit: number, page: number, start: Date, unControlled: boolean }) => Promise<ImageClass[]>;
+interface MakeGetBanWordsOptions {
+    listBanWord
 }
 
-export default function makeGetImages({listImages}: MakeGetImagesOptions) {
-    return async function getImages(httpRequest) {
-        const {limit, page, start, unControlled} = httpRequest.query;
+export default function buildGetBanWords({listBanWord}: MakeGetBanWordsOptions) {
+    return async function getBanWords(httpRequest): Promise<{banWords: BanWordClass[]}> {
+        const {limit, page, start} = httpRequest.query;
 
         const options: any = {};
 
@@ -26,7 +26,6 @@ export default function makeGetImages({listImages}: MakeGetImagesOptions) {
             options.page = _page;
         }
 
-
         if (start) {
             const _start = new Date(start);
             if (isNaN(_start.getTime())) {
@@ -34,14 +33,9 @@ export default function makeGetImages({listImages}: MakeGetImagesOptions) {
             }
             options.start = _start;
         }
-        options.unControlled = !!unControlled;
 
-        return await Promise.all((await listImages(options)).map((async image => {
-            await image.getOwner();
-            return image.toSchema();
-        })));
+        const banWords = await listBanWord(options);
 
-
-
+        return {banWords};
     }
 }

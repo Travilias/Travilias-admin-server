@@ -20,5 +20,6 @@ export default function makeListImages({imageRepository}: MakeListImagesOptions)
         }
 
         return images
+
     }
 }
