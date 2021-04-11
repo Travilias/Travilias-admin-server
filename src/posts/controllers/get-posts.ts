@@ -1,15 +1,16 @@
-import ImageClass from "@tas/images/models/ImageClass";
+import PostClass from "@tas/posts/models/PostClass";
 
-interface MakeGetImagesOptions {
-    listImages: (options: { limit: number, page: number, start: Date, unControlled: boolean }) => Promise<ImageClass[]>;
+interface MakeGetPostsOptions {
+    listPosts: (options: {limit: number, page: number, start: Date}) => Promise<PostClass[]>,
 }
 
-export default function makeGetImages({listImages}: MakeGetImagesOptions) {
-    return async function getImages(httpRequest) {
-        const {limit, page, start, unControlled} = httpRequest.query;
+export default function makeGetPosts({listPosts}: MakeGetPostsOptions) {
+    return async function getPosts(httpRequest) {
+        const {limit, page, start} = httpRequest.query;
 
         const options: any = {};
 
+        // Verify and add options
         if (limit) {
             const _limit = parseInt(limit);
             if (isNaN(_limit)) {
@@ -26,7 +27,6 @@ export default function makeGetImages({listImages}: MakeGetImagesOptions) {
             options.page = _page;
         }
 
-
         if (start) {
             const _start = new Date(start);
             if (isNaN(_start.getTime())) {
@@ -34,14 +34,14 @@ export default function makeGetImages({listImages}: MakeGetImagesOptions) {
             }
             options.start = _start;
         }
-        options.unControlled = !!unControlled;
 
-        return await Promise.all((await listImages(options)).map((async image => {
-            await image.getOwner();
-            return image.toSchema();
-        })));
+        const posts = await listPosts(options);
 
-
+        // Populate and return posts
+        return await Promise.all(posts.map(async post => {
+            await Promise.all([post.getAuthor(), post.getImages()]);
+            return post.toSchema();
+        }))
 
     }
 }

@@ -1,7 +1,8 @@
-import {UserInfos, UserSchema} from "@tas/users/types";
+import {UserInfos} from "@tas/users/types";
+import UserClass from "@tas/users/models/UserClass";
 
 interface MakePostUserOptions {
-    addUser: (userInfos: UserInfos) => Promise<UserSchema>;
+    addUser: (userInfos: UserInfos) => Promise<UserClass>;
 }
 
 export default function makePostUser ({addUser}: MakePostUserOptions) {
@@ -12,6 +13,6 @@ export default function makePostUser ({addUser}: MakePostUserOptions) {
             ...userInfos
         });
 
-        return {user};
+        return {user: user.toSchema()};
     }
 }

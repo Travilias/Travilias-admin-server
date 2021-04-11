@@ -6,6 +6,6 @@ export default function makePostImage ({addImage}) {
             ...imageInfos
         });
 
-        return {image};
+        return {image: image.toSchema()};
     }
 }
