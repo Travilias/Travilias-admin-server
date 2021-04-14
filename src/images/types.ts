@@ -1,3 +1,4 @@
+import {ControlType} from "@tas/posts/types";
 
 export enum ImageType {
     PROFILE_PICTURE = "PROFILE_PICTURE",
@@ -24,10 +25,11 @@ export interface ImageSchema {
     url: string;
     ownerId: string; // TODO : type Id
     type: ImageType;
-    controlDatetime: string|number|null|Date;
     claims: any[]; // TODO : type claims
     createdAt: string|number|Date;
     pined: boolean;
+    controlType: ControlType|null;
+    controlledAt: Date|null
 }
 
 interface FindAllOptions {

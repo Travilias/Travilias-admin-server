@@ -1,6 +1,7 @@
 import {ImageSchema, ImageType} from "@tas/images/types";
 import Schema from "@tas/Schema";
 import UserClass from "@tas/users/models/UserClass";
+import {ControlType} from "@tas/posts/types";
 
 /**
  * Represents an image
@@ -11,10 +12,11 @@ export default abstract class ImageClass implements ImageSchema, Schema<any>{
     protected _url: string;
     protected _ownerId: string;
     protected _type: ImageType;
-    protected _controlDatetime: Date;
     protected _claims: any[]; // TODO : Type claim
     protected _createdAt: Date;
     protected _pined: boolean;
+    protected _controlType: ControlType|null;
+    protected _controlledAt: Date|null;
 
     protected _owner: UserClass|null;
 
@@ -37,19 +39,21 @@ export default abstract class ImageClass implements ImageSchema, Schema<any>{
                     url,
                     ownerId,
                     type,
-                    controlDatetime,
                     claims,
                     createdAt,
-                    pined
+                    pined,
+                    controlType,
+                    controlledAt
                 }) {
         this._id = id;
         this._url = url;
         this._ownerId = ownerId;
         this._type = type;
-        this._controlDatetime = controlDatetime;
         this._claims = claims;
         this._createdAt = createdAt;
         this._pined = pined;
+        this._controlType = controlType;
+        this._controlledAt = controlledAt;
     }
 
     abstract getOwner(): Promise<UserClass>;
@@ -71,10 +75,6 @@ export default abstract class ImageClass implements ImageSchema, Schema<any>{
         return this._type;
     }
 
-    get controlDatetime(): Date {
-        return this._controlDatetime;
-    }
-
     get claims(): any[] {
         return this._claims;
     }
@@ -87,12 +87,12 @@ export default abstract class ImageClass implements ImageSchema, Schema<any>{
         return this._pined;
     }
 
-    pin() {
-        this._pined = true;
+    get controlType(): ControlType | null {
+        return this._controlType;
     }
 
-    unPin() {
-        this._pined = false;
+    get controlledAt(): Date | null {
+        return this._controlledAt;
     }
 
     toSchema(): any {
@@ -100,10 +100,11 @@ export default abstract class ImageClass implements ImageSchema, Schema<any>{
             id: this.id,
             url: this.url,
             type: this.type,
-            controlDatetime: this.controlDatetime,
             claims: this.claims,
             createdAt: this.createdAt,
             pined: this.pined,
+            controlType: this.controlType,
+            controlledAt: this.controlledAt
         }
 
         if (this._owner) {
