@@ -1,4 +1,5 @@
 import BanWordClass from "./BanWordClass";
+import ResponseError from "@tas/tools/types/ResponseError";
 
 export default function buildBanWord({makeId}){
 
@@ -13,23 +14,19 @@ export default function buildBanWord({makeId}){
             super({id, language, word, createdAt});
 
             if(!isIdValid(id)){
-                // TODO : Modifier avec ResponseError
-                throw new Error("invalid value for id");
+                throw new ResponseError("invalid value for id", 400);
             }
 
             if(!isLanguageValid(language)){
-                // TODO : Modifier avec ResponseError
-                throw new Error("invalid value for language");
+                throw new ResponseError("invalid value for language", 400);
             }
 
             if(!isWordValid(word)){
-                // TODO : Modifier avec ResponseError
-                throw new Error("invalid value for word");
+                throw new ResponseError("invalid value for word", 400);
             }
 
             if(!isCreatedAtValid(createdAt)){
-                // TODO : Modifier avec ResponseError
-                throw new Error("invalid value for created date");
+                throw new ResponseError("invalid value for created date", 400);
             }
 
         }
