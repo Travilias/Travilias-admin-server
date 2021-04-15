@@ -10,7 +10,7 @@ export default function makeAddImage({imageRepository}: MakeAddImageOptions) {
     return async function addImage(imageInfos: ImageSchema) {
         const image = new Image(imageInfos);
 
-        return imageRepository.insert({
+        return new Image(await imageRepository.insert({
             id: image.id,
             url: image.url,
             ownerId: image.ownerId,
@@ -19,6 +19,6 @@ export default function makeAddImage({imageRepository}: MakeAddImageOptions) {
             claims: image.claims,
             createdAt: image.createdAt,
             pined: image.pined,
-        });
+        }));
     }
 }

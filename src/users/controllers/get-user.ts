@@ -1,7 +1,7 @@
-import {UserSchema} from "@tas/users/types";
+import UserClass from "@tas/users/models/UserClass";
 
 interface MakeGetUserOptions {
-    findUser: ({id}) => Promise<UserSchema | null>;
+    findUser: ({id}) => Promise<UserClass | null>;
 }
 
 export default function makeGetUser({findUser}: MakeGetUserOptions) {
@@ -14,6 +14,6 @@ export default function makeGetUser({findUser}: MakeGetUserOptions) {
             throw new Error("User not found");
         }
 
-        return {user};
+        return {user: user.toSchema()};
     }
 }

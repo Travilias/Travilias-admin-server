@@ -1,6 +1,7 @@
 import {UserSchema} from "@tas/users/types";
+import Schema from "@tas/Schema";
 
-export default abstract class UserClass {
+export default abstract class UserClass implements Schema<any>{
     protected _username: string;
     protected _id: string;
     protected _displayedName: string;
@@ -47,5 +48,16 @@ export default abstract class UserClass {
 
     get profile_picture(): string {
         return this._profile_picture;
+    }
+
+    toSchema(): any {
+        return {
+            id: this.id,
+            username: this.username,
+            email: this.email,
+            displayedName: this.displayedName,
+            created_at: this.created_at,
+            profile_picture: this.profile_picture,
+        }
     }
 }

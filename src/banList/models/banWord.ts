@@ -1,5 +1,7 @@
+import ResponseError from "@tas/tools/types/ResponseError";
 import BanWordClass from "./BanWordClass";
 import ResponseError from "@tas/tools/types/ResponseError";
+
 
 export default function buildBanWord({makeId}){
 

@@ -1,10 +1,11 @@
-import {ImageType} from "@tas/images/types";
-import {UserSchema} from "@tas/users/types";
+import {ImageSchema, ImageType} from "@tas/images/types";
+import Schema from "@tas/Schema";
+import UserClass from "@tas/users/models/UserClass";
 
 /**
  * Represents an image
  */
-export default abstract class ImageClass {
+export default abstract class ImageClass implements ImageSchema, Schema<any>{
 
     protected _id: string;
     protected _url: string;
@@ -14,6 +15,8 @@ export default abstract class ImageClass {
     protected _claims: any[]; // TODO : Type claim
     protected _createdAt: Date;
     protected _pined: boolean;
+
+    protected _owner: UserClass|null;
 
     /**
      * Create an image
@@ -49,7 +52,7 @@ export default abstract class ImageClass {
         this._pined = pined;
     }
 
-    abstract getOwner(): Promise<UserSchema>;
+    abstract getOwner(): Promise<UserClass>;
 
 
     get id(): string {
@@ -90,5 +93,25 @@ export default abstract class ImageClass {
 
     unPin() {
         this._pined = false;
+    }
+
+    toSchema(): any {
+        const res: any = {
+            id: this.id,
+            url: this.url,
+            type: this.type,
+            controlDatetime: this.controlDatetime,
+            claims: this.claims,
+            createdAt: this.createdAt,
+            pined: this.pined,
+        }
+
+        if (this._owner) {
+            res.owner = this._owner.toSchema();
+        } else {
+            res.ownerId = this._ownerId;
+        }
+
+        return res;
     }
 }
