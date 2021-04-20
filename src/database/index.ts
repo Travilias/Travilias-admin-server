@@ -11,8 +11,14 @@ const url = DATABASE_URL;
  */
 const dbName = DATABASE_NAME;
 
+/**
+ * boolean representing if the connection needs a certificate to authentify
+ */
 const useCert = DATABASE_CERT_LOCATION && DATABASE_CERT_LOCATION.length > 0;
 
+/**
+ * Options used to connect to the MongoDb database
+ */
 const options: MongoClientOptions = {
     useNewUrlParser: true, 
     useUnifiedTopology: true
