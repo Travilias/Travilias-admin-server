@@ -36,18 +36,14 @@ const options: MongoClientOptions = {
 if (useCert) {
   if (DATABASE_CERT_LOCATION && DATABASE_CERT_LOCATION.length > 0) {
     const credentials = fs.readFileSync(DATABASE_CERT_LOCATION).toString();
-    console.log(credentials);
     options.sslKey = credentials;
     options.sslCert = credentials;
   } else {
     const credentials = Buffer.from(DATABASE_CERT)
     options.sslKey = credentials;
     options.sslCert = credentials;
-    console.log(DATABASE_CERT);
   }
 }
-
-console.log(url, options)
 
 /**
  * Mongo client (initialize by makeDb function)
