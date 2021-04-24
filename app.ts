@@ -8,7 +8,6 @@ app.use(express.json());
 const corsOptions: cors.CorsOptions = {
   origin: "*", // TODO : Can we do something ???
   optionsSuccessStatus: 200,
-  exposedHeaders: "x-access-token",
 };
 
 app.use(cors(corsOptions));

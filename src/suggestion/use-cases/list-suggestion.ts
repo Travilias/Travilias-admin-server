@@ -30,7 +30,6 @@ export default function buildListSuggestion({suggestionDb}:buildListSuggestionOp
                 await suggestion.getAuthor();
                 suggestions.push(suggestion);
             }
-            console.log({suggestions});
             
     
             return suggestions;

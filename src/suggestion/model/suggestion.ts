@@ -38,7 +38,6 @@ export default function buildMakeSuggestion({makeId, findUserById}: BuildMakeSug
 
         public async getAuthor(){            
             this._user = await findUserById({id: this._authorId});
-            console.log(this._user);
         }
     }
 }
