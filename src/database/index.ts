@@ -2,6 +2,7 @@ import {
     DATABASE_CERT,
     DATABASE_CERT_LOCATION,
     DATABASE_NAME,
+
     DATABASE_URL
 } from "@tas/environment";
 import * as fs from "fs";
@@ -31,15 +32,18 @@ const options: MongoClientOptions = {
   useUnifiedTopology: true,
 };
 
+
 if (useCert) {
-  let credentials: string | Buffer;
   if (DATABASE_CERT_LOCATION && DATABASE_CERT_LOCATION.length > 0) {
-    credentials = fs.readFileSync(DATABASE_CERT_LOCATION);
+    const credentials = fs.readFileSync(DATABASE_CERT_LOCATION).toString();
+    console.log(credentials);
+    options.sslKey = credentials;
+    options.sslCert = credentials;
   } else {
-    credentials = DATABASE_CERT;
+    const credentials = Buffer.from(DATABASE_CERT)
+    options.sslKey = credentials;
+    options.sslCert = credentials;
   }
-  options.sslKey = credentials;
-  options.sslCert = credentials;
 }
 
 /**
