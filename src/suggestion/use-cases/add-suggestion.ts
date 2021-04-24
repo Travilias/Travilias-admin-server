@@ -1,22 +1,23 @@
-import { Suggestion, SuggestionSchema } from "../types";
+import SuggestionDb from "../data-access/suggestion";
+import { Suggestion } from "../model";
+import SuggestionClass from "../model/SuggestionClass";
+import { SuggestionSchema } from "../types";
 
 interface buildListSuggestionOptions {
-    suggestionDb: Readonly<{
-        findById: (id:string) => Promise<SuggestionSchema>,
-        findAll: () => Promise<SuggestionSchema[]>,
-        insert: ({}:SuggestionSchema) => Promise<SuggestionSchema>
-    }>,
-    makeSuggestion: ({}:SuggestionSchema) => Suggestion
+    suggestionDb: SuggestionDb,
 }
 
 
-export default function buildAddSuggestion({suggestionDb, makeSuggestion}:buildListSuggestionOptions){
+export default function buildAddSuggestion({suggestionDb}:buildListSuggestionOptions){
 
-    return async function addSuggestion({...suggestionsInfos}:SuggestionSchema){
+    return async function addSuggestion({...suggestionsInfos}:SuggestionSchema):Promise<SuggestionClass>{
 
-        const suggestion = await suggestionDb.insert({...suggestionsInfos});
+        const data = await suggestionDb.insert({...suggestionsInfos});
 
-        return makeSuggestion(suggestion);
+        let suggestion = new Suggestion(data.id, data.message, data.author_id, data.date);
+        suggestion.getAuthor();
+
+        return suggestion;
 
     }
 

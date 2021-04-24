@@ -27,7 +27,7 @@ export default function makeExpressCallback(controller: (request) => Promise<any
                 console.error(error);
                 return res.status(500).json({
                     ok: "ko",
-                    message: "SERVER_ERROR",
+                    message: error.message,
                 });
             })
     }

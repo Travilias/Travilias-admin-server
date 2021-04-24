@@ -1,7 +1,8 @@
 import ResponseError from "@tas/tools/types/ResponseError";
-import { SuggestionSchema, BuildMakeSuggestionOptions, Suggestion } from "@tas/suggestion/types";
+import { BuildMakeSuggestionOptions } from "@tas/suggestion/types";
+import SuggestionClass from "./SuggestionClass";
 
-export default function buildMakeSuggestion({makeId}: BuildMakeSuggestionOptions){
+export default function buildMakeSuggestion({makeId, findUserById}: BuildMakeSuggestionOptions){
 
     // TODO : définir les conditions de validation des paramètres
     const isValidId = (id) => true;
@@ -9,35 +10,36 @@ export default function buildMakeSuggestion({makeId}: BuildMakeSuggestionOptions
     const isValidUser = (user) => true;
     const isValidDate = (date) => true;
 
-    return function makeSuggestion({
-        id = makeId(),
-        message,
-        user,
-        date
-    }:SuggestionSchema):Suggestion {
+    return class Suggestion extends SuggestionClass {
 
-        if(!isValidId(id)){
-            throw new ResponseError("[Création de la suggestion] id non valide", 400);
+        public constructor(
+            id = makeId(),
+            message,
+            authorId,
+            date
+        ){
+            super(id, message, authorId, date);
+            if(!isValidId(id)){
+                throw new ResponseError("[Création de la suggestion] id non valide", 400);
+            }
+
+            if(!isValidMessage(message)){
+                throw new ResponseError("[Création de la suggestion] message non valide", 400);
+            }
+
+            if(!isValidUser(authorId)){
+                throw new ResponseError("[Création de la suggestion] authorId non valide", 400);
+            }
+
+            if(!isValidDate(date)){
+                throw new ResponseError("[Création de la suggestion] date non valide", 400);
+            }
         }
 
-        if(!isValidMessage(message)){
-            throw new ResponseError("[Création de la suggestion] message non valide", 400);
+        public async getAuthor(){            
+            this._user = await findUserById({id: this._authorId});
+            console.log(this._user);
         }
-
-        if(!isValidUser(user)){
-            throw new ResponseError("[Création de la suggestion] user non valide", 400);
-        }
-
-        if(!isValidDate(date)){
-            throw new ResponseError("[Création de la suggestion] date non valide", 400);
-        }
-
-        return Object.freeze({
-            getId: () => id,
-            getMessage: () => message,
-            getUser: () => user,
-            getDate: () => date
-        });
-
     }
 }
+

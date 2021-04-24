@@ -1,4 +1,3 @@
-import ResponseError from "@tas/tools/types/ResponseError";
 import { Db, ObjectId } from "mongodb";
 import { ClaimRequestSchema } from "../model";
 import ClaimClass from "../model/ClaimClass";

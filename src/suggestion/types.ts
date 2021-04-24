@@ -1,24 +1,18 @@
-
-interface Suggestion {
-    getId: () => string,
-    getMessage: () => string,
-    getUser: () => number, // TODO : modifier des que l'on a un type user
-    getDate: () => string
-}
+import UserClass from "@tas/users/models/UserClass";
 
 interface SuggestionSchema {
     id: string;
     message: string;
-    user: number; // TODO : modifier des que l'on a un type user
+    author_id: string; 
     date: string;
 }
 
 interface BuildMakeSuggestionOptions {
-    makeId: () => string
+    makeId: () => string,
+    findUserById: ({id}:{id:string}) => Promise<UserClass>;
 }
 
 export {
     SuggestionSchema,
     BuildMakeSuggestionOptions,
-    Suggestion
 }

@@ -1,9 +1,9 @@
 import { makeDb } from "@tas/database";
-import buildSuggestionDb from "./suggestion";
+import SuggestionDb from "./suggestion";
 
-const collection = "suggestion";
+const collectionName = "suggestion";
 
-const suggestionDb = buildSuggestionDb({makeDb, collection});
+const suggestionDb = new SuggestionDb({makeDb, collectionName});
 
 export {
     suggestionDb

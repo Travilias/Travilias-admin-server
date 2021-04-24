@@ -1,29 +1,40 @@
-import { Suggestion, SuggestionSchema } from "../types";
+import ResponseError from "@tas/tools/types/ResponseError";
+import SuggestionDb from "../data-access/suggestion";
+import { Suggestion } from "../model";
+import SuggestionClass from "../model/SuggestionClass";
+import { SuggestionSchema } from "../types";
 
 interface buildListSuggestionOptions {
-    suggestionDb: Readonly<{
-        findById: (id:string) => Promise<SuggestionSchema>,
-        findAll: () => Promise<SuggestionSchema[]>,
-        insert: ({}:SuggestionSchema) => Promise<SuggestionSchema>
-    }>,
-    makeSuggestion: ({}:SuggestionSchema) => Suggestion
+    suggestionDb: SuggestionDb,
 }
 
 
-export default function buildListSuggestion({suggestionDb, makeSuggestion}:buildListSuggestionOptions){
+export default function buildListSuggestion({suggestionDb}:buildListSuggestionOptions){
+    
 
-    // TODO : pagination
-    return async function listSuggestion({}){
+    return async function listSuggestion({limit = 10, page = 0}){
 
-        const data = await suggestionDb.findAll();
-        let suggestions:Array<Suggestion> = [];
+        let data;
 
-        for(let datum of data){
-            let suggestion = makeSuggestion(datum);
-            suggestions.push(suggestion);
+        try {
+            data = await suggestionDb.findAll(limit, page);
         }
-
-        return suggestions;
+        catch (error) {
+            throw new ResponseError("listSuggestion doesn't work", 500)
+        }
+        finally {
+            let suggestions:Array<SuggestionClass> = [];
+    
+            for(let datum of data){
+                let suggestion = new Suggestion(datum.id, datum.message, datum.user, datum.date);
+                await suggestion.getAuthor();
+                suggestions.push(suggestion);
+            }
+            console.log({suggestions});
+            
+    
+            return suggestions;
+        }
 
     }
 

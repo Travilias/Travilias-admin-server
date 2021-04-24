@@ -1,10 +1,14 @@
+import ImageClass from "@tas/images/models/ImageClass";
 import PostClass from "@tas/posts/models/PostClass";
+import UserClass from "@tas/users/models/UserClass";
 
 interface MakeGetPostByIdOptions {
     findPostById: (id: string) => Promise<PostClass>,
+    findImageById: (id:string) => Promise<ImageClass>,
+    findUserById: (id:string) => Promise<UserClass>,
 }
 
-export default function makeGetPostById({findPostById}: MakeGetPostByIdOptions) {
+export default function makeGetPostById({findPostById, findImageById, findUserById}: MakeGetPostByIdOptions) {
     return async function getPostById(httpRequest) {
         const {id} = httpRequest.params;
 

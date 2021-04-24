@@ -10,6 +10,7 @@ interface ClaimSchema {
 }
 
 interface ClaimRequestSchema {
+    id?:number
     author_id:string;
     message:string;
     type:ClaimType;

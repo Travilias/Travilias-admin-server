@@ -1,98 +1,81 @@
 import makeId from "@tas/makeId";
 import ResponseError from "@tas/tools/types/ResponseError";
-import {Db, FilterQuery, ObjectId} from "mongodb";
-import { BuildMakeSuggestionOptions, SuggestionSchema } from "../types";
+import {Db, ObjectId} from "mongodb";
+import { SuggestionSchema } from "../types";
 
 interface buildSuggestionDbOptions{
     makeDb: () => Promise<Db>;
-    collection: string;
+    collectionName: string;
 }
 
-export default function buildSuggestionDb({makeDb, collection}:buildSuggestionDbOptions){
 
-    async function findById(id:string):Promise<SuggestionSchema> {
 
-        const db = await makeDb();
+export default class SuggestionDb {
+    
+    makeDb: () => Promise<Db>;
+    collectionName: string;
 
-        const res = await db.collection(collection)
+    public constructor({makeDb, collectionName}:buildSuggestionDbOptions){
+        this.makeDb = makeDb;
+        this.collectionName = collectionName;
+    }
+
+    public async findById(id:string):Promise<SuggestionSchema> {
+
+        const db = await this.makeDb();
+
+        const res = await db.collection(this.collectionName)
                 .findOne( {"_id.$oid": new ObjectId(id)} );
 
         if(!res) {
-            // TODO : throw exeption
-            return {
-                id: "-1",
-                message: "no suggestion found with this id",
-                user: null,
-                date: null
-            };
+            throw new ResponseError("unable to find the suggestion", 500);
         }
 
         const suggestion = res.ops[0];
         return {
             id: suggestion._id,
             message: suggestion.message,
-            user: suggestion.user,
+            author_id: suggestion.user,
             date: suggestion.date
         };
 
     }
 
-        // TODO : pagination
-    async function findAll():Promise<SuggestionSchema[]> {
+    public async findAll(limit = 10, page = 0):Promise<SuggestionSchema[]> {
 
-        const db = await makeDb();
+        const db = await this.makeDb();
 
-        const suggestions = db.collection(collection)
-                .find();
+        const suggestions = db.collection(this.collectionName)
+                .find().limit(limit).skip(page * limit);
 
         if(!suggestions) {
-            // TODO : throw exeption
-            return [
-                {
-                    id: "-1",
-                    message: "no suggestion found with this id",
-                    user: null,
-                    date: null
-                }
-            ];
+            throw new ResponseError("unable to find the suggestions", 500);
         }
 
         return suggestions.toArray();
 
     }
 
-    async function insert({
+    public async insert({
         id: _id = makeId(),
         ...SuggestionInfos
     }:SuggestionSchema):Promise<SuggestionSchema> {
 
-        const db = await makeDb();
-        const res = await db.collection(collection).insertOne({_id, ...SuggestionInfos});
+        const db = await this.makeDb();
+        const res = await db.collection(this.collectionName).insertOne({_id, ...SuggestionInfos});
 
         if(!res) {
-            // TODO : throw exeption
-            return {
-                id: "-1",
-                message: "no suggestion found with this id", 
-                user: null,
-                date: null
-            };
+            throw new ResponseError("unable to insert the suggestion", 500);
         }
 
         const suggestion = res.ops[0];
         return {
             id: suggestion._id,
             message: suggestion.message,
-            user: suggestion.user,
+            author_id: suggestion.user,
             date: suggestion.date
         };
         
     }
-
-    return Object.freeze({
-        findById,
-        findAll,
-        insert
-    })
 
 }
