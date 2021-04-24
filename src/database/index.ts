@@ -43,6 +43,7 @@ if (useCert) {
     const credentials = Buffer.from(DATABASE_CERT)
     options.sslKey = credentials;
     options.sslCert = credentials;
+    console.log(DATABASE_CERT);
   }
 }
 
