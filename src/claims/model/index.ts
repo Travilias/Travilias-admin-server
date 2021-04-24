@@ -1,14 +1,14 @@
 import UserClass from "@tas/users/models/UserClass";
 import { ClaimType } from "../types";
 import buildClaim from "./Claim";
-
+// TODO : should not be defined here !
 interface ClaimSchema {
     id:string;
     author:UserClass;
     message:string;
     type:ClaimType;
 }
-
+// TODO : should not be defined here !
 interface ClaimRequestSchema {
     author_id:string;
     message:string;
@@ -21,4 +21,4 @@ export {
     ClaimSchema,
     ClaimRequestSchema,
     Claim
-}
+};
