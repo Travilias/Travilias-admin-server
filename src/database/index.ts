@@ -47,6 +47,8 @@ if (useCert) {
   }
 }
 
+console.log(url, options)
+
 /**
  * Mongo client (initialize by makeDb function)
  */
