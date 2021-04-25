@@ -6,9 +6,16 @@ interface buildAddBanWordOptions {
 }
 
 export default function buildAddBanWord({banWordDb}: buildAddBanWordOptions){
-    return async function addBanWord({banWordInfos}: {banWordInfos:BanWordSchema}): Promise<BanWordClass>{
+    return async function addBanWord(banWordInfos:BanWordSchema): Promise<BanWordClass>{
 
-        const res = await banWordDb.insert(banWordInfos);
+        const banWordReq = new BanWord(banWordInfos);
+        
+
+        const res = await banWordDb.insert({
+            id: banWordReq.id,
+            language: banWordReq.language,
+            word: banWordReq.word
+        });
 
         return new BanWord(res);
 
