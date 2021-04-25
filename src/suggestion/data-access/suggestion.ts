@@ -26,17 +26,16 @@ export default class SuggestionDb {
         console.log(_id);
         
 
-        const res = await db.collection(this.collectionName).find({_id: _id});
+        const res = await db.collection(this.collectionName).find({_id: new ObjectId(_id)});
 
         if(!res) {
             throw new ResponseError("unable to find the suggestion", 500);
         }
-
-        console.log(await res.toArray());
         
 
-        const suggestion = await res.toArray()[0];
-        return suggestion;
+        const suggestion = (await res.toArray())[0];
+        
+        return {id: suggestion._id, ...suggestion};
 
     }
 
@@ -60,7 +59,7 @@ export default class SuggestionDb {
     }:SuggestionSchema):Promise<SuggestionSchema> {
 
         const db = await this.makeDb();
-        const res = await db.collection(this.collectionName).insertOne({...SuggestionInfos});
+        const res = await db.collection(this.collectionName).insertOne({user: SuggestionInfos.author_id, ...SuggestionInfos});
 
         if(!res) {
             throw new ResponseError("unable to insert the suggestion", 500);

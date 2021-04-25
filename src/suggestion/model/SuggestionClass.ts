@@ -1,3 +1,4 @@
+import AnswerClass from "@tas/answers/model/AnswerClass";
 import makeId from "@tas/makeId";
 import UserClass from "@tas/users/models/UserClass";
 
@@ -11,6 +12,8 @@ export default abstract class SuggestionClass {
     protected _createdAt:Date;
 
     protected _authorId:string;
+
+    protected _answer:AnswerClass;
 
     public constructor({
         id = makeId(),
@@ -37,10 +40,16 @@ export default abstract class SuggestionClass {
         return this._user;
     }
 
+    get answer():AnswerClass {
+        return this._answer;
+    }
+
     get createdAt():Date {
         return this._createdAt;
     }
 
     abstract getAuthor();
+
+    abstract getAnswer();
 
 }

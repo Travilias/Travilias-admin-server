@@ -1,17 +1,11 @@
 import ResponseError from "@tas/tools/types/ResponseError";
-import { Db } from "mongodb";
+import { Db, ObjectId } from "mongodb";
+import { filterAnswer } from ".";
 import { AnswerSchema } from "../types";
 
 interface AnswerRepositoryOptions {
     makeDb: () => Promise<Db>;
     collectionName:string;
-}
-
-interface filterAnswer {
-    id?:string;
-    title?:string;
-    message?:string;
-    suggestion_id?:string
 }
 
 export default class AnswerRepository {
@@ -40,11 +34,17 @@ export default class AnswerRepository {
     public async findWithFilter({filter}: {filter:filterAnswer}):Promise<AnswerSchema[]>{
         const db = await this.makeDb();
 
+        console.log(filter);
+        
+
         const res = await db.collection(this.collectionName).find(filter);
 
         if(!res){
             throw new ResponseError("unable to find answer with these filters", 500);
         }
+        
+        console.log(await res.toArray());
+        
 
         return await res.toArray();
     }

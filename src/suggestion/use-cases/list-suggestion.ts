@@ -24,6 +24,7 @@ export default function buildListSuggestion({suggestionDb}:buildListSuggestionOp
         for(let datum of data){            
             let suggestion = new Suggestion({id: datum._id, message: datum.message, authorId: datum.user, createdAt: datum.createdAt});
             await suggestion.getAuthor();
+            await suggestion.getAnswer();
             suggestions.push(suggestion);
         }
         

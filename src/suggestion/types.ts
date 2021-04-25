@@ -7,12 +7,6 @@ interface SuggestionSchema {
     createdAt: Date;
 }
 
-interface BuildMakeSuggestionOptions {
-    makeId: () => string,
-    findUserById: ({id}:{id:string}) => Promise<UserClass>;
-}
-
 export {
     SuggestionSchema,
-    BuildMakeSuggestionOptions,
 }
