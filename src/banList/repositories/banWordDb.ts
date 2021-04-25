@@ -11,6 +11,16 @@ export default class BanWordRepository {
         this.collectionName = options.collectionName;
     }
 
+    async findOne({id: id, ...filtres}:BanWordSchema){
+        const db = await this.makeDb();
+        
+        const res = await db.collection(this.collectionName).find(filtres);
+        
+        
+        return await res.hasNext();
+
+    }
+
     async findAll({start = new Date(), limit = 10, page = 0}): Promise<BanWordSchema[]> {
         const db = await this.makeDb();
         
@@ -41,9 +51,10 @@ export default class BanWordRepository {
 
     async delete({id: _id}): Promise<BanWordSchema[]> {
         const db = await this.makeDb();
-        
 
-        const res = await db.collection(this.collectionName).deleteOne({_id: new ObjectId(_id)});
+
+        const res = await db.collection(this.collectionName).deleteOne({_id: _id});
+        
 
         if (!res){
             throw new Error("cannot delete this ban word");
