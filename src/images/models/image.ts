@@ -1,10 +1,10 @@
 import {ImageSchema} from "@tas/images/types"
 import ImageClass from "@tas/images/models/ImageClass";
-import {UserSchema} from "@tas/users/types";
+import UserClass from "@tas/users/models/UserClass";
 
 interface BuildMakeImageOptions {
     makeId: () => string;
-    findUser: (options: { id: string }) => Promise<UserSchema>;
+    findUser: (options: { id: string }) => Promise<UserClass>;
 }
 
 /**
@@ -26,7 +26,7 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
      * @param _v
      */
     const isUrlValid = (_v: string) => {
-        const urlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
+        const urlRegex = /^https?:\/\/[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)(\?((.*=.*)(&?))*)?$/;
         return _v !== null && urlRegex.test(_v);
     };
 
@@ -90,16 +90,15 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
      */
     return class Image extends ImageClass {
 
-        protected _owner: UserSchema;
-
         constructor({
                         id = makeId(),
                         createdAt = new Date(),
+            controlDatetime = null,
                         claims = [],
                         pined = false,
                         ..._options
                     }: ImageSchema) {
-            super({id, createdAt, claims, pined, ..._options});
+            super({id, createdAt, controlDatetime, claims, pined, ..._options});
 
             if (!isIdValid(this._id)) {
                 throw  new Error("Invalid value for Id")
@@ -127,7 +126,7 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
             }
         }
 
-        async getOwner(): Promise<UserSchema> {
+        async getOwner(): Promise<UserClass> {
             if (!this._owner) {
                 this._owner = await findUser({id: this._ownerId});
             }

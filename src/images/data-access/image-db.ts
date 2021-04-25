@@ -58,4 +58,14 @@ export default class ImageRepository {
         return {id, ...insertedInfos};
     }
 
+    async findById(id: string): Promise<ImageSchema | null> {
+        const db = await this.makeDb();
+        const query = db.collection(this.collectionName).find({_id: id})
+        const response = await query.toArray();
+        if (response.length === 0) return null;
+
+        return {id: response[0]._id, ...response[0]};
+
+    }
+
 }

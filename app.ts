@@ -1,8 +1,18 @@
 import * as express from "express";
 import apiV0Router from "./src/router";
+import * as cors from 'cors';
 const app = express();
 
 app.use(express.json());
+
+const corsOptions: cors.CorsOptions = {
+  origin: "*", // TODO : Can we do something ???
+  optionsSuccessStatus: 200,
+  exposedHeaders: "x-access-token",
+};
+
+app.use(cors(corsOptions));
+
 
 
 // Add routes

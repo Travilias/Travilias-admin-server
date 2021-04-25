@@ -1,6 +1,6 @@
 import makeAddUser from "@tas/users/use-cases/add-user";
 import {userRepository} from "@tas/users/data-access";
-import makeFindUser from "@tas/users/use-cases/find-users";
+import makeFindUser from "@tas/users/use-cases/find-user";
 
 /**
  * Create a User with the given user infos

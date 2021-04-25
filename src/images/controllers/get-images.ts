@@ -26,6 +26,7 @@ export default function makeGetImages({listImages}: MakeGetImagesOptions) {
             options.page = _page;
         }
 
+
         if (start) {
             const _start = new Date(start);
             if (isNaN(_start.getTime())) {
@@ -35,23 +36,12 @@ export default function makeGetImages({listImages}: MakeGetImagesOptions) {
         }
         options.unControlled = !!unControlled;
 
-        const images = await listImages(options);
+        return await Promise.all((await listImages(options)).map((async image => {
+            await image.getOwner();
+            return image.toSchema();
+        })));
 
-        // Create return type
-        const populatedImages = await Promise.all(images.map(async image => {
-            const owner = await image.getOwner();
-            return {
-                id: image.id,
-                url: image.url,
-                createdAt: image.createdAt,
-                pined: image.pined,
-                type: image.type,
-                controlDatetime: image.controlDatetime,
-                claims: image.claims,
-                owner
-            }
-        }));
 
-        return {images: populatedImages};
+
     }
 }
