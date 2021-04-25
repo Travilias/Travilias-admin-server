@@ -1,5 +1,4 @@
 import { Db, ObjectId } from "mongodb";
-import { ClaimRequestSchema } from "../model";
 import ClaimClass from "../model/ClaimClass";
 
 export default class ClaimRepository {
@@ -12,13 +11,15 @@ export default class ClaimRepository {
         this.collectionName = collectionName;
     }
 
-    public async insert({id: _id, ...claimInfos}: ClaimRequestSchema): Promise<ClaimClass> {
+    // TODO : better types (it does not return a class !)
+    public async insert({id: _id, ...claimInfos}: any): Promise<any> {
         const db = await this.makeDb();
         const result = await db.collection(this.collectionName).insertOne({_id, ...claimInfos});
         const {_id: id, ...insertedInfos} = result.ops[0];
         return {id, ...insertedInfos};
     }
 
+    // TODO : better types (it does not return a class !)
     public async findById(id:string):Promise<ClaimClass> {
         const db = await this.makeDb();
 

@@ -1,4 +1,4 @@
-import makeId from "@tas/makeId";
+import makeId from "@tas/makeId"; // TODO : why is there a makeId import, the point of the function definition is to make it abstract
 import ResponseError from "@tas/tools/types/ResponseError";
 import UserClass from "@tas/users/models/UserClass";
 import { ClaimSchema } from ".";
