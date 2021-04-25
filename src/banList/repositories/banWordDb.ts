@@ -1,4 +1,4 @@
-import { Db, FilterQuery } from "mongodb";
+import { Db, FilterQuery, ObjectID, ObjectId } from "mongodb";
 import { BanWordSchema } from "../models";
 
 export default class BanWordRepository {
@@ -11,6 +11,16 @@ export default class BanWordRepository {
         this.collectionName = options.collectionName;
     }
 
+    async findOne({id: id, ...filtres}:BanWordSchema){
+        const db = await this.makeDb();
+        
+        const res = await db.collection(this.collectionName).find(filtres);
+        
+        
+        return await res.hasNext();
+
+    }
+
     async findAll({start = new Date(), limit = 10, page = 0}): Promise<BanWordSchema[]> {
         const db = await this.makeDb();
         
@@ -21,10 +31,10 @@ export default class BanWordRepository {
         };
 
 
-        const pages = db.collection(this.collectionName).find(query).limit(limit).skip(page * limit);
+        const banlist = db.collection(this.collectionName).find().limit(limit).skip(page * limit);
 
         // Map the query result
-        return (await pages.toArray()).map(({_id: id, ...banWord}) => ({
+        return (await banlist.toArray()).map(({_id: id, ...banWord}) => ({
             id,
             ...banWord
         }));
@@ -32,6 +42,7 @@ export default class BanWordRepository {
 
     async insert({id: _id, ...banWordInfos}: BanWordSchema): Promise<BanWordSchema> {
         const db = await this.makeDb();
+        
         const result = await db.collection(this.collectionName).insertOne({_id, ...banWordInfos});
         const {_id: id, ...insertedInfos} = result.ops[0];
         return {id, ...insertedInfos};
@@ -39,7 +50,10 @@ export default class BanWordRepository {
 
     async delete({id: _id}): Promise<BanWordSchema[]> {
         const db = await this.makeDb();
-        const res = db.collection("customers").deleteOne({_id: _id});
+
+
+        const res = await db.collection(this.collectionName).deleteOne({_id: _id});
+        
 
         if (!res){
             throw new Error("cannot delete this ban word");

@@ -36,6 +36,6 @@ export default function buildGetBanWords({listBanWord}: MakeGetBanWordsOptions) 
 
         const banWords = await listBanWord(options);
 
-        return {banWords};
+        return banWords;
     }
 }

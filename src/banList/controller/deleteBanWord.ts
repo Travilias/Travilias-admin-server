@@ -6,8 +6,8 @@ interface MakeDeleteBanWordsOptions {
 
 export default function buildDeleteBanWord({removeBanWord}: MakeDeleteBanWordsOptions) {
     return async function deleteBanWord(httpRequest): Promise<{banWords: BanWordClass[]}> {
-        const {id} = httpRequest.query;
-
+        const {id} = httpRequest.params;
+        
         const banWords = await removeBanWord({id});
 
         return {banWords};
