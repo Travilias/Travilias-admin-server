@@ -42,7 +42,7 @@ export default function buildMakeUser({makeId}: BuildMakeUserOptions) {
             if (!isCreatedAtValid(this._created_at)) {
                 throw new Error("Invalid Created At Date")
             }
-            if (!isProfilePictureValid(this.profile_picture)) {
+            if (!isProfilePictureValid(this._profile_picture)) {
                 throw new Error("Invalid Profile Picture")
             }
 

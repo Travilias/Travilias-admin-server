@@ -18,6 +18,9 @@ export default function makeFindUser({userRepository}: MakeFindUserOptions) {
      * @returns {UserClass| null} - the founded User infos or null
      */
     return async function findUser({id}: { id: string }): Promise<UserClass | null> {
-        return new User(await userRepository.findById(id));
+        const user = await userRepository.findById(id);
+        if (user)
+        return new User(user);
+        return null;
     }
 }
