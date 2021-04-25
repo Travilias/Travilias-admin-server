@@ -8,20 +8,21 @@ export default abstract class SuggestionClass {
     protected _id:string;
     protected _message:string;
     protected _user:UserClass;
-    protected _date:Date;
+    protected _createdAt:Date;
 
     protected _authorId:string;
 
-    public constructor(
+    public constructor({
         id = makeId(),
         message,
         authorId,
-        date
-    ) {
+        createdAt
+    }) {
+        
         this._id = id;
         this._message = message;
         this._authorId = authorId;
-        this._date = date;
+        this._createdAt = createdAt;
     }
 
     get id():string{
@@ -36,8 +37,8 @@ export default abstract class SuggestionClass {
         return this._user;
     }
 
-    get date():Date {
-        return this._date;
+    get createdAt():Date {
+        return this._createdAt;
     }
 
     abstract getAuthor();

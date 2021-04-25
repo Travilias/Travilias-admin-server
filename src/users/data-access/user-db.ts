@@ -43,7 +43,7 @@ export default class UserRepository {
     public async findById(_id: string): Promise<UserSchema> {
         const db = await this.makeDb();
         const response = await db.collection(this.collection).findOne({_id});
-        const {_id: id, ...userInfos} = response
+        const {_id: id, ...userInfos} = response;
         return {id, ...userInfos};
     }
 

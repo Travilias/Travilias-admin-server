@@ -13,12 +13,13 @@ export default function buildMakeSuggestion({makeId, findUserById}: BuildMakeSug
     return class Suggestion extends SuggestionClass {
 
         public constructor(
-            id = makeId(),
+            {id = makeId(),
             message,
             authorId,
-            date
+            createdAt}
         ){
-            super(id, message, authorId, date);
+            
+            super({id, message, authorId, createdAt});
             if(!isValidId(id)){
                 throw new ResponseError("[Création de la suggestion] id non valide", 400);
             }
@@ -31,8 +32,8 @@ export default function buildMakeSuggestion({makeId, findUserById}: BuildMakeSug
                 throw new ResponseError("[Création de la suggestion] authorId non valide", 400);
             }
 
-            if(!isValidDate(date)){
-                throw new ResponseError("[Création de la suggestion] date non valide", 400);
+            if(!isValidDate(createdAt)){
+                throw new ResponseError("[Création de la suggestion] createdAt non valide", 400);
             }
         }
 

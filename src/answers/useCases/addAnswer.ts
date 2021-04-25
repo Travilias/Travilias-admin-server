@@ -25,6 +25,8 @@ export default function buildAddAnswer({answerDb, suggestionDb}: buildAddAnswerO
         }
 
         const suggestion = await suggestionDb.findById(answerInfos.suggestion_id);
+        console.log(suggestion);
+        
         if(!suggestion) {
             throw new ResponseError("suggestion not found", 409);
         }

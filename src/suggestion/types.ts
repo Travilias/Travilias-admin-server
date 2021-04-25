@@ -4,7 +4,7 @@ interface SuggestionSchema {
     id: string;
     message: string;
     author_id: string; 
-    date: string;
+    createdAt: Date;
 }
 
 interface BuildMakeSuggestionOptions {

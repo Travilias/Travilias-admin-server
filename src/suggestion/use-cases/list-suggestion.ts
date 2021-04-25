@@ -16,24 +16,19 @@ export default function buildListSuggestion({suggestionDb}:buildListSuggestionOp
 
         let data;
 
-        try {
-            data = await suggestionDb.findAll(limit, page);
+        data = await suggestionDb.findAll(limit, page);
+
+        let suggestions:Array<SuggestionClass> = [];
+        
+
+        for(let datum of data){            
+            let suggestion = new Suggestion({id: datum._id, message: datum.message, authorId: datum.user, createdAt: datum.createdAt});
+            await suggestion.getAuthor();
+            suggestions.push(suggestion);
         }
-        catch (error) {
-            throw new ResponseError("listSuggestion doesn't work", 500)
-        }
-        finally {
-            let suggestions:Array<SuggestionClass> = [];
-    
-            for(let datum of data){
-                let suggestion = new Suggestion(datum.id, datum.message, datum.user, datum.date);
-                await suggestion.getAuthor();
-                suggestions.push(suggestion);
-            }
-            
-    
-            return suggestions;
-        }
+        
+
+        return suggestions;
 
     }
 
