@@ -42,7 +42,6 @@ export default class BanWordRepository {
 
     async insert({id: _id, ...banWordInfos}: BanWordSchema): Promise<BanWordSchema> {
         const db = await this.makeDb();
-        console.log({id: _id, ...banWordInfos});
         
         const result = await db.collection(this.collectionName).insertOne({_id, ...banWordInfos});
         const {_id: id, ...insertedInfos} = result.ops[0];
