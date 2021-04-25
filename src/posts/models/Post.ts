@@ -60,7 +60,8 @@ export default function buildPost({makeId, findImageById, findUserById}: BuildPo
         }
 
         async getImages(): Promise<ImageClass[]> {
-            return Promise.all(this._imagesIds.map(async image => await findImageById(image)));
+            this._images = await Promise.all(this._imagesIds.map(async image => await findImageById(image)));
+            return this._images;
         }
 
     }
