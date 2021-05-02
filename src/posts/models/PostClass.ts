@@ -111,6 +111,7 @@ export default abstract class PostClass implements PostSchema, Schema<any> {
         }
 
         if (this._images) {
+            this._images = this._images.filter(i => i);
             res.images = this._images.map(i => i.toSchema());
         } else {
             res.imagesIds = this.imagesIds;

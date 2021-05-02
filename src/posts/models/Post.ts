@@ -36,7 +36,7 @@ export default function buildPost({
     }: PostSchema) {
        const _reports = reports.map(r => new Report(r));
 
-      super({ id, imagesIds, createdAt, reports, ...options });
+      super({ id, imagesIds, createdAt, reports: _reports, ...options });
 
       if (!isIdValid(this._id)) {
         throw new Error("Invalid value for id");
@@ -72,7 +72,7 @@ export default function buildPost({
       this._images = await Promise.all(
         this._imagesIds.map(async (image) => await findImageById(image))
       );
-      return this._images;
+      return this._images.filter(i => i !== null);
     }
 
     async populateReports(): Promise<ReportClass[]> {

@@ -16,7 +16,7 @@ export default function buildMakeSuggestion({makeId, findUserById}: BuildMakeSug
             id = makeId(),
             message,
             authorId,
-            date
+            date = new Date()
         ){
             super(id, message, authorId, date);
             if(!isValidId(id)){

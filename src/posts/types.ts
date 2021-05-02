@@ -17,7 +17,7 @@ export interface PostSchema {
     createdAt: Date;
     controlType: ControlType|null;
     controlledAt: Date|null;
-    reports: ReportInfos[];
+    reports: any[];
 }
 
 export interface PostDocument {
