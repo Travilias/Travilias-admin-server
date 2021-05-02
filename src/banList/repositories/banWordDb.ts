@@ -1,4 +1,4 @@
-import { Db, FilterQuery, ObjectID, ObjectId } from "mongodb";
+import { Db, FilterQuery, ObjectId } from "mongodb";
 import { BanWordSchema } from "../models";
 
 export default class BanWordRepository {
@@ -51,8 +51,7 @@ export default class BanWordRepository {
     async delete({id: _id}): Promise<BanWordSchema[]> {
         const db = await this.makeDb();
 
-
-        const res = await db.collection(this.collectionName).deleteOne({_id: _id});
+        const res = await db.collection(this.collectionName).deleteOne({_id: '' + new ObjectId(_id)});
         
 
         if (!res){

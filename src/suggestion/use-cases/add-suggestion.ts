@@ -24,8 +24,6 @@ export default function buildAddSuggestion({suggestionDb}:buildListSuggestionOpt
         }
 
         suggestionsInfos.createdAt = new Date();
-
-        console.log({suggestionsInfos});
         
 
         const data = await suggestionDb.insert({...suggestionsInfos});

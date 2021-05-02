@@ -16,7 +16,7 @@ export default function buildListSuggestion({suggestionDb}:buildListSuggestionOp
 
         let data;
 
-        data = await suggestionDb.findAll(limit, page);
+        data = await suggestionDb.findAll({limit, page});
 
         let suggestions:Array<SuggestionClass> = [];
         

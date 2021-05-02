@@ -33,8 +33,6 @@ export default class AnswerRepository {
     
     public async findWithFilter({filter}: {filter:filterAnswer}):Promise<AnswerSchema[]>{
         const db = await this.makeDb();
-
-        console.log(filter);
         
 
         const res = await db.collection(this.collectionName).find(filter);
@@ -42,8 +40,6 @@ export default class AnswerRepository {
         if(!res){
             throw new ResponseError("unable to find answer with these filters", 500);
         }
-        
-        console.log(await res.toArray());
         
 
         return await res.toArray();

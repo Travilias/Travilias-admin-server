@@ -2,6 +2,7 @@ export default function makeListSuggestionController({listSuggestion}: {listSugg
     return async function listSuggestionController(httpRequest) {
 
         const {limit, page} = httpRequest.query;
+        
 
         return await listSuggestion({
             limit,

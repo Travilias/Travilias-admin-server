@@ -1,6 +1,6 @@
 import makeId from "@tas/makeId";
 import ResponseError from "@tas/tools/types/ResponseError";
-import {Db, ObjectId} from "mongodb";
+import {Db, FilterQuery, ObjectId} from "mongodb";
 import { SuggestionSchema } from "../types";
 
 interface buildSuggestionDbOptions{
@@ -39,11 +39,17 @@ export default class SuggestionDb {
 
     }
 
-    public async findAll(limit = 10, page = 0):Promise<SuggestionSchema[]> {
+    public async findAll({start = new Date(), limit = 10, page = 0}):Promise<SuggestionSchema[]> {
 
         const db = await this.makeDb();
 
-        const suggestions = await db.collection(this.collectionName).find().limit(limit).skip(page * limit);
+        const query: FilterQuery<SuggestionSchema> = {
+            $and: [
+                {createdAt: {$lte: start}}
+            ]
+        };
+
+        const suggestions = await db.collection(this.collectionName).find(query).limit(+limit).skip(+(page * limit));
 
         if(!suggestions) {
             throw new ResponseError("unable to find the suggestions", 500);
