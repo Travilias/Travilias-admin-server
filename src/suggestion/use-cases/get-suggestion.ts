@@ -13,8 +13,9 @@ export default function buildGetSuggestion({suggestionDb}:buildGetSuggestionOpti
 
         const data = await suggestionDb.findById(id);
 
-        let suggestion = new Suggestion(data.id, data.message, data.author_id, data.date);
-        suggestion.getAuthor();
+        let suggestion = new Suggestion({id: data.id, message: data.message, authorId: data.author_id, createdAt: data.createdAt});
+        await suggestion.getAuthor();
+        await suggestion.getAnswer();
 
         return suggestion;
 
