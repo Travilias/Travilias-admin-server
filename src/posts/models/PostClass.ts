@@ -4,6 +4,9 @@ import {ImageSchema} from "@tas/images/types";
 import Schema from "@tas/Schema";
 import UserClass from "@tas/users/models/UserClass";
 import ImageClass from "@tas/images/models/ImageClass";
+import ReportClass from "@tas/reports/ReportClass";
+import { report } from "node:process";
+import { Report } from "@tas/reports";
 
 export default abstract class PostClass implements PostSchema, Schema<any> {
     protected _id: string;
@@ -15,11 +18,12 @@ export default abstract class PostClass implements PostSchema, Schema<any> {
     protected _createdAt: Date;
     protected _controlType: ControlType|null;
     protected _controlledAt: Date|null;
+    protected _reports: ReportClass[];
 
     protected _author: UserClass|null;
     protected _images: ImageClass[]|null;
 
-    protected constructor({id, title, content, imagesIds, authorId, location, createdAt, controlType, controlledAt}: PostSchema) {
+    protected constructor({id, title, content, imagesIds, authorId, location, createdAt, controlType, controlledAt, reports}: PostSchema) {
         this._id = id;
         this._title = title;
         this._content = content;
@@ -29,11 +33,14 @@ export default abstract class PostClass implements PostSchema, Schema<any> {
         this._createdAt = createdAt;
         this._controlType = controlType;
         this._controlledAt = controlledAt;
+        this._reports = reports.map(r => new Report(r))
     }
 
     abstract getAuthor(): Promise<UserSchema>;
 
     abstract getImages(): Promise<ImageSchema[]>;
+
+    abstract populateReports(): Promise<ReportClass[]>;
 
     public control(type: ControlType) {
         this._controlType = type;
@@ -76,6 +83,13 @@ export default abstract class PostClass implements PostSchema, Schema<any> {
         return this._controlledAt;
     }
 
+    get reports(): any[] {
+        return this._reports;
+    }
+
+
+
+
     toSchema(): any {
         const res: any = {
             id: this.id,
@@ -86,7 +100,8 @@ export default abstract class PostClass implements PostSchema, Schema<any> {
             location: this.location,
             createdAt: this.createdAt,
             controlType: this.controlType,
-            controlledAt: this.controlledAt
+            controlledAt: this.controlledAt,
+            reports: this.reports.map(r => r.toSchema())
         }
 
         if (this._author) {
