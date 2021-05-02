@@ -7,6 +7,8 @@ interface MakeFindImageOptions {
 
 export default  function makeFindImageById({imageRepository}: MakeFindImageOptions) {
     return async function findImageById(id: string) {
-        return new Image(await imageRepository.findById(id));
+        const image = await imageRepository.findById(id)
+        if (!image) return null;
+        return new Image(image);
     }
 }

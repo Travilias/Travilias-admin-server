@@ -21,7 +21,8 @@ export default function makeGetPostById({findPostById}: MakeGetPostByIdOptions) 
         // Populate the post
         await Promise.all([
             post.getAuthor(),
-            post.getImages()
+            post.getImages(),
+            post.populateReports()
         ]);
 
         // return the post

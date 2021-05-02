@@ -21,7 +21,8 @@ export default function makeEditPost({postRepository}: MakePutPostOptions) {
             location: post.location,
             createdAt: post.createdAt,
             controlType: post.controlType,
-            controlledAt: post.controlledAt
+            controlledAt: post.controlledAt,
+            reports: post.reports
         });
         return new Post(updated);
     }

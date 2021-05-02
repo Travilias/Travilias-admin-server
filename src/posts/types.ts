@@ -1,3 +1,6 @@
+import ReportClass from "@tas/reports/ReportClass";
+import { ReportInfos, ReportSchema } from "@tas/reports/types";
+
 export interface GPSLocation {
     label: string;
     lat: number;
@@ -14,6 +17,7 @@ export interface PostSchema {
     createdAt: Date;
     controlType: ControlType|null;
     controlledAt: Date|null;
+    reports: any[];
 }
 
 export interface PostDocument {
@@ -26,6 +30,7 @@ export interface PostDocument {
     createdAt: Date;
     controlType: ControlType|null;
     controlledAt: Date|null;
+    reports: ReportClass[];
 }
 
 export enum ControlType {

@@ -1,6 +1,7 @@
 import PostRepository from "@tas/posts/data-access/postDb";
 import {PostSchema} from "@tas/posts/types";
 import {Post} from "@tas/posts/models";
+import { report } from "node:process";
 
 
 interface MakeAddPostOptions {
@@ -20,7 +21,8 @@ export default function makeAddPost({postRepository}: MakeAddPostOptions) {
             location: post.location,
             createdAt: post.createdAt,
             controlType: null,
-            controlledAt: null
+            controlledAt: null,
+            reports: []
         }));
     }
 }

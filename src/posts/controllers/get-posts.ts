@@ -41,7 +41,7 @@ export default function makeGetPosts({listPosts}: MakeGetPostsOptions) {
 
         // Populate and return posts
         return await Promise.all(posts.map(async post => {
-            await Promise.all([post.getAuthor(), post.getImages()]);
+            await Promise.all([post.getAuthor(), post.getImages(), post.populateReports()]);
             return post.toSchema();
         }))
 

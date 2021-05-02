@@ -16,7 +16,7 @@ export default function makePutPost({editPost}: MakePostPutOptions) {
 
         const post = await editPost({id, controlType, controlledAt: new Date()});
 
-        await Promise.all([post.getAuthor(), post.getImages()]);
+        await Promise.all([post.getAuthor(), post.getImages(), post.populateReports()]);
 
         return {post: post.toSchema()};
     }

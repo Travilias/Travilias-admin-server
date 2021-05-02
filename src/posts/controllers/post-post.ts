@@ -14,7 +14,8 @@ export default function makePostPost({addPost}: MakePostPostOptions) {
 
         await Promise.all([
             post.getAuthor(),
-            post.getImages()
+            post.getImages(),
+            post.populateReports()
         ])
 
         return {post: post.toSchema()};
