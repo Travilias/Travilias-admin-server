@@ -1,6 +1,6 @@
 import makeId from "@tas/makeId";
 import ResponseError from "@tas/tools/types/ResponseError";
-import {Db, ObjectId} from "mongodb";
+import {Db, FilterQuery, ObjectId} from "mongodb";
 import { SuggestionSchema } from "../types";
 
 interface buildSuggestionDbOptions{
@@ -20,39 +20,42 @@ export default class SuggestionDb {
         this.collectionName = collectionName;
     }
 
-    public async findById(id:string):Promise<SuggestionSchema> {
+    public async findById(_id:string):Promise<SuggestionSchema> {
 
         const db = await this.makeDb();
+        console.log(_id);
+        
 
-        const res = await db.collection(this.collectionName)
-                .findOne( {"_id.$oid": new ObjectId(id)} );
+        const res = await db.collection(this.collectionName).find({_id: new ObjectId(_id)});
 
         if(!res) {
             throw new ResponseError("unable to find the suggestion", 500);
         }
+        
 
-        const suggestion = res.ops[0];
-        return {
-            id: suggestion._id,
-            message: suggestion.message,
-            author_id: suggestion.user,
-            date: suggestion.date
-        };
+        const suggestion = (await res.toArray())[0];
+        
+        return {id: suggestion._id, ...suggestion};
 
     }
 
-    public async findAll(limit = 10, page = 0):Promise<SuggestionSchema[]> {
+    public async findAll({start = new Date(), limit = 10, page = 0}):Promise<SuggestionSchema[]> {
 
         const db = await this.makeDb();
 
-        const suggestions = db.collection(this.collectionName)
-                .find().limit(limit).skip(page * limit);
+        const query: FilterQuery<SuggestionSchema> = {
+            $and: [
+                {createdAt: {$lte: start}}
+            ]
+        };
+
+        const suggestions = await db.collection(this.collectionName).find(query).limit(+limit).skip(+(page * limit));
 
         if(!suggestions) {
             throw new ResponseError("unable to find the suggestions", 500);
         }
 
-        return suggestions.toArray();
+        return await suggestions.toArray();
 
     }
 
@@ -62,7 +65,7 @@ export default class SuggestionDb {
     }:SuggestionSchema):Promise<SuggestionSchema> {
 
         const db = await this.makeDb();
-        const res = await db.collection(this.collectionName).insertOne({_id, ...SuggestionInfos});
+        const res = await db.collection(this.collectionName).insertOne({user: SuggestionInfos.author_id, ...SuggestionInfos});
 
         if(!res) {
             throw new ResponseError("unable to insert the suggestion", 500);
@@ -73,7 +76,7 @@ export default class SuggestionDb {
             id: suggestion._id,
             message: suggestion.message,
             author_id: suggestion.user,
-            date: suggestion.date
+            createdAt: suggestion.createdAt
         };
         
     }

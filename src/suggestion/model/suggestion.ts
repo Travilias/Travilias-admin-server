@@ -1,8 +1,19 @@
+import { Answer } from "@tas/answers/model";
+import AnswerClass from "@tas/answers/model/AnswerClass";
+import { filterAnswer } from "@tas/answers/repository";
+import { AnswerSchema } from "@tas/answers/types";
 import ResponseError from "@tas/tools/types/ResponseError";
-import { BuildMakeSuggestionOptions } from "@tas/suggestion/types";
+import UserClass from "@tas/users/models/UserClass";
 import SuggestionClass from "./SuggestionClass";
 
-export default function buildMakeSuggestion({makeId, findUserById}: BuildMakeSuggestionOptions){
+
+interface BuildMakeSuggestionOptions {
+    makeId: () => string,
+    findUserById: ({id}:{id:string}) => Promise<UserClass>;
+    findAnswerBySuggestionId: ({suggestion_id}: {suggestion_id:string}) => Promise<AnswerClass>;
+}
+
+export default function buildMakeSuggestion({makeId, findUserById, findAnswerBySuggestionId}: BuildMakeSuggestionOptions){
 
     // TODO : définir les conditions de validation des paramètres
     const isValidId = (id) => true;
@@ -13,12 +24,13 @@ export default function buildMakeSuggestion({makeId, findUserById}: BuildMakeSug
     return class Suggestion extends SuggestionClass {
 
         public constructor(
-            id = makeId(),
+            {id = makeId(),
             message,
             authorId,
-            date = new Date()
+            createdAt}
         ){
-            super(id, message, authorId, date);
+            
+            super({id, message, authorId, createdAt});
             if(!isValidId(id)){
                 throw new ResponseError("[Création de la suggestion] id non valide", 400);
             }
@@ -31,13 +43,18 @@ export default function buildMakeSuggestion({makeId, findUserById}: BuildMakeSug
                 throw new ResponseError("[Création de la suggestion] authorId non valide", 400);
             }
 
-            if(!isValidDate(date)){
-                throw new ResponseError("[Création de la suggestion] date non valide", 400);
+            if(!isValidDate(createdAt)){
+                throw new ResponseError("[Création de la suggestion] createdAt non valide", 400);
             }
         }
 
         public async getAuthor(){            
             this._user = await findUserById({id: this._authorId});
+        }
+
+        public async getAnswer(){
+            let answer = await findAnswerBySuggestionId({suggestion_id: this._id});
+            this._answer = answer;
         }
     }
 }
