@@ -43,17 +43,6 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
     const isTypeValid = (_v: string) =>
         ["PROFILE_PICTURE", "ATTACHMENT", "POST_PICTURE", "BOOK_COVER"].indexOf(_v) !== -1;
 
-
-    /**
-     * Return true if the parameter is a valid ControlDateTime
-     * @param _v
-     */
-    const isControlDateTimeValid = (_v: string | number | null | Date) => {
-        if (!_v) return true;
-        const date = new Date(_v);
-        return !isNaN(date.getTime());
-    };
-
     /**
      * Return true if the parameter is a valid array of claims
      * @param _v
@@ -93,12 +82,13 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
         constructor({
                         id = makeId(),
                         createdAt = new Date(),
-            controlDatetime = null,
                         claims = [],
                         pined = false,
+                        controlledAt = null,
+                        controlType = null,
                         ..._options
                     }: ImageSchema) {
-            super({id, createdAt, controlDatetime, claims, pined, ..._options});
+            super({id, createdAt, claims, pined, controlledAt, controlType, ..._options});
 
             if (!isIdValid(this._id)) {
                 throw  new Error("Invalid value for Id")
@@ -111,9 +101,6 @@ export default function buildMakeImage({makeId, findUser}: BuildMakeImageOptions
             }
             if (!isTypeValid(this._type)) {
                 throw  new Error("Invalid value for Type")
-            }
-            if (!isControlDateTimeValid(this._controlDatetime)) {
-                throw  new Error("Invalid value for controlDateTime")
             }
             if (!areClaimsValid(this._claims)) {
                 throw  new Error("Invalid value for claims")

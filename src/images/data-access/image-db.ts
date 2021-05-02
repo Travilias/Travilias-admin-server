@@ -65,7 +65,12 @@ export default class ImageRepository {
         if (response.length === 0) return null;
 
         return {id: response[0]._id, ...response[0]};
+    }
 
+    async saveImage({id: _id, ...imageInfos}: ImageSchema) {
+        const db = await this.makeDb();
+        const res = await db.collection(this.collectionName).updateOne({_id}, {$set: {...imageInfos}});
+        return res.modifiedCount > 0 ? {id: _id, ...imageInfos}: null;
     }
 
 }
