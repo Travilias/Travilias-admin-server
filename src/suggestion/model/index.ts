@@ -1,4 +1,3 @@
-import { answerDb } from "@tas/answers/repository";
 import { findAnswerBySuggestion } from "@tas/answers/useCases";
 import makeId from "@tas/makeId";
 import { findUser } from "@tas/users/use-cases";
