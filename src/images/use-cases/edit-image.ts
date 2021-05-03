@@ -14,7 +14,6 @@ export default function makeEditImage({imageRepository}: MakeEditImageOptions) {
         const updated = await imageRepository.saveImage({
             id: image.id,
             url: image.url,
-            controlDatetime: image.controlDatetime,
             claims: image.claims,
             pined: image.pined,
             type: image.type,

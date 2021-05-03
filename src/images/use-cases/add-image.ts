@@ -15,10 +15,11 @@ export default function makeAddImage({imageRepository}: MakeAddImageOptions) {
             url: image.url,
             ownerId: image.ownerId,
             type: image.type,
-            controlDatetime: image.controlDatetime,
             claims: image.claims,
             createdAt: image.createdAt,
             pined: image.pined,
+            controlType: image.controlType,
+            controlledAt: image.controlledAt
         }));
     }
 }
