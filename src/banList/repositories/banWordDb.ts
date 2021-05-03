@@ -21,17 +21,11 @@ export default class BanWordRepository {
 
     }
 
-    async findAll({start = new Date(), limit = 10, page = 0}): Promise<BanWordSchema[]> {
+    async findAll({}): Promise<BanWordSchema[]> {
         const db = await this.makeDb();
-        
-        const query: FilterQuery<BanWordSchema> = {
-            $and: [
-                {createdAt: {$lt: start}}
-            ]
-        };
 
 
-        const banlist = db.collection(this.collectionName).find().limit(limit).skip(page * limit);
+        const banlist = db.collection(this.collectionName).find();
 
         // Map the query result
         return (await banlist.toArray()).map(({_id: id, ...banWord}) => ({

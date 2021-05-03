@@ -5,16 +5,12 @@ interface buildListBanWordOptions {
     banWordDb: BanWordRepository;
 }
 
-interface listBanWordOptions{
-    start:Date;
-    limit:number;
-    page:number;
-}
+interface listBanWordOptions{}
 
 export default function buildListBanWord({banWordDb}: buildListBanWordOptions){
-    return async function listBanWord({start = new Date(), limit = 10, page = 0}: listBanWordOptions): Promise<BanWordClass[]>{
+    return async function listBanWord({}: listBanWordOptions): Promise<BanWordClass[]>{
 
-        const res = await banWordDb.findAll({start, limit, page});
+        const res = await banWordDb.findAll({});
         
 
         let banWordArray:BanWordClass[] = [];
