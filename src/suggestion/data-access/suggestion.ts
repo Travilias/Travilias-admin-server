@@ -49,7 +49,7 @@ export default class SuggestionDb {
             ]
         };
 
-        const suggestions = await db.collection(this.collectionName).find(query).limit(+limit).skip(+(page * limit));
+        const suggestions = await db.collection(this.collectionName).find(query).sort({createdAt: -1}).limit(+limit).skip(+(page * limit));
 
         if(!suggestions) {
             throw new ResponseError("unable to find the suggestions", 500);
